@@ -5,20 +5,29 @@
 #include <iomanip>
 using namespace std;
 
-// JAVA has true and false
-// C++ has 0 and !0
 int main() {
-  std::cout << "Hello World" << std::endl;
-  // system("pause");
-  int i = 5;
-  float f = .6;
-  double d = .445;
 
-  cout << setw(5) << i << setw(5) << f << setw(7) << d << endl;
-  if (10){
-    cout << "YES!" << endl;
+  int arr1[10][10];
+  for (int i = 0; i < 10; i++){
+    for (int j = 1; j <= 10; j++){
+      int num = i*10 + j;
+      arr1[i][j] = num;
+      cout << setw(6) << num;
+    }
+    cout << endl;
   }
+  char str[256];
+  cout << "Enter Anything: ";
+  cin >> str;
 
+  // How to handle spaces
+  cin.getline(str, 256);
+  cout << str << endl;
 
+  // Methods for handling input errors
+  if (cin.fail()){
+    cin.clear();
+    cin.ignore();
+  }
   return 0;
 }
