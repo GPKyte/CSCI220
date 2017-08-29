@@ -6,8 +6,8 @@
 using namespace std;
 
 // returnType, MethodName(paramType, [paramType,...]);
-int getValueInRange(int, int);
-float getValueInRange(float, float);
+// template, <class T> T MethodName(T, [T,...]);    T == var for "type"
+template <class T> T getValueInRange(T, T);
 
 int main() {
   int a = 6; int b = 25;
@@ -19,30 +19,13 @@ int main() {
   return 0;
 }
 
-int getValueInRange(int low, int high){
+template <class T> T getValueInRange(T low, T high){
   while (1) {
     cout << "Enter a value between " << low << " and " << high << ": " ;
     cout.flush();
     // Good practice to initialize values that aren't immediately overwritten.
     //    Bc cpp grabs open memory that could have any value.
-    int value = 0;
-    // Not error checking
-    cin >> value;
-    if (value >= low && value <= high){
-      return value;
-    } else {
-      cout << "Invalid" << endl;
-    }
-  }
-}
-
-float getValueInRange(float low, float high){
-  while (1) {
-    cout << "Enter a value between " << low << " and " << high << ": " ;
-    cout.flush();
-    // Good practice to initialize values that aren't immediately overwritten.
-    //    Bc cpp grabs open memory that could have any value.
-    float value = 0;
+    T value;
     // Not error checking
     cin >> value;
     if (value >= low && value <= high){
