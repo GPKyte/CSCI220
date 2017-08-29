@@ -5,23 +5,20 @@
 #include <iomanip>
 using namespace std;
 
-// returnType, MethodName(paramType, [paramType,...]);
-// template, <class T> T MethodName(T, [T,...]);    T == var for "type"
-template <class T> T getValueInRange(T, T);
-
+void swap(int * a, int *b);
 int main() {
-  int i = 12;
-  // Pointer to type "int" p = the memory location of i
-  int * p = &i; // * is pointer, & is memory location
-  //?? hmm not sure here
-  int & r = i;
+  int a = 12;
+  int b = 14;
 
-  // "Go to this pointer location and assign value 54 to it"
-  *p = 54;
-
-  cout << i << endl;
-  cout << hex << p << dec << endl;
-  cout << r << endl;
-  cout << * p << endl;
+  // cpp assumes you want to copy everything
+  cout << a << " " << b << endl;
+  swap(&a, &b);
+  cout << a << " " << b << endl;
   return 0;
+}
+
+void swap(int * a, int * b) {
+  int temp = *a;
+  *a = *b;
+  *b = temp;
 }
