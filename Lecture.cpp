@@ -3,22 +3,27 @@
 
 #include <iostream>
 #include <iomanip>
+#include "./student.h"
+
 using namespace std;
 
 void swap(int * a, int *b);
 int main() {
-  int a = 12;
-  int b = 14;
+  Student s1;
+  Student s2("Gavin","Kyte", 3.783);
+  Student * sp;
 
-  // cpp assumes you want to copy everything
-  cout << a << " " << b << endl;
-  swap(&a, &b);
-  cout << a << " " << b << endl;
+  sp = new Student("Jill", "Coppus", 3.10);
+  sp -> print();
+
   return 0;
 }
 
-void swap(int * a, int * b) {
-  int temp = *a;
-  *a = *b;
-  *b = temp;
+// Deprecated for this commit
+// if need access to the memory address, use pointer *
+// else, use reference &
+void swap(int & a, int & b) {
+  int temp = a;
+  a = b;
+  b = temp;
 }
