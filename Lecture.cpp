@@ -7,23 +7,11 @@
 
 using namespace std;
 
-void swap(int * a, int *b);
-int main() {
+void test(){
   Student s1;
-  Student s2("Gavin","Kyte", 3.783);
-  Student * sp;
-
-  sp = new Student("Jill", "Coppus", 3.10);
-  sp -> print();
-
-  return 0;
 }
 
-// Deprecated for this commit
-// if need access to the memory address, use pointer *
-// else, use reference &
-void swap(int & a, int & b) {
-  int temp = a;
-  a = b;
-  b = temp;
+int main() {
+  test();
+  return 0;
 }
