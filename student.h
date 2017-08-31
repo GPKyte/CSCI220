@@ -27,6 +27,17 @@ public:
     grades = new int[25];
   }
 
+  // const protects you from overwritting other
+  Student(const & Student other){
+    firstName = other.firstName;
+    lastName = other.lastName;
+    gpa = other.gpa;
+    grades = new int[25];
+    for (int i = 0; i < 25; i++){
+      grades[i] = other.grades[i];
+    }
+  }
+
   // Deconstructor
   ~Student(){
     // Prevent Memory Leaks
