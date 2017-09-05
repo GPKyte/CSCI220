@@ -13,11 +13,11 @@ using namespace std;
   // "new" and "delete" relationship
 
 int main(){
-  BetterArray a(3);
-  a[0] = 4;
-  a[1] = 8;
-  a[2] = 5;
+  vector<int> v(10);
+  v[0] = 6
+  v.resize(20);   // Resizes the array and keeps data
+  v.size();       // Show size
+  v.push_back(6); // Appends parameter to end of array and extends
 
-  cout << a << endl;
   return 0;
 }

@@ -1,9 +1,9 @@
 #include <iostream>
 using namespace std;
 
-class BetterArray{
+template <class T> class BetterArray{
 private:
-  int * buffer;
+  T * buffer;
   int size;
 public:
   BetterArray(){
@@ -22,7 +22,7 @@ public:
   //  this -> size = size;
   //}
 
-  int& operator[](int index){
+  T& operator[](int index){
     if(size <= index || index < 0){
       throw(1);
     }
