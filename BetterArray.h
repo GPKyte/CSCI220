@@ -28,4 +28,13 @@ public:
     }
     return buffer[index];
   }
+  // Since ostream is another class, we use "friend"
+  friend ostream& operator<<(ostream& os, const BetterArray& me){
+    os << "[";
+    for (int i = 0; i < me.size -1; i++){
+      os << me.buffer[i] << ", ";
+    }
+    os << me.buffer[me.size - 1] << "]";
+    return os;
+  }
 };

@@ -13,11 +13,11 @@ using namespace std;
   // "new" and "delete" relationship
 
 int main(){
-  BetterArray a;
-  BetterArray b(5);
-  BetterArray * c;
-  c = new BetterArray(8);
-  a[0] = 7;
-  cout << a[0] << endl;
+  BetterArray a(3);
+  a[0] = 4;
+  a[1] = 8;
+  a[2] = 5;
+
+  cout << a << endl;
   return 0;
 }
