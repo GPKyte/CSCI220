@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include "BetterArray.h"
+#include <vector>
 using namespace std;
 
 // Questions for Quiz:
@@ -14,10 +15,11 @@ using namespace std;
 
 int main(){
   vector<int> v(10);
-  v[0] = 6
+  v[0] = 6;
   v.resize(20);   // Resizes the array and keeps data
   v.size();       // Show size
   v.push_back(6); // Appends parameter to end of array and extends
-
+  int a[5];
+  cout << sizeof(a)/sizeof(a[0]) << endl;
   return 0;
 }
