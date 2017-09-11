@@ -8,11 +8,12 @@
 #include <exception>
 using namespace std;
 
+template <class T>
 class MagicBag {
 private:
   struct MagicItem {
     MagicItem *next;
-    int value;
+    T value;
   };
   int size;
   MagicItem *head;  // -> '' of last item
@@ -41,23 +42,28 @@ public:
       head = next;
     }
   }
-  void insert(int value) {
+  void insert(T value) {
     MagicItem *item = new MagicItem();
     item -> value = value;
     item -> next = head;
     head = item;
     size++;
   }
-  void print() {
-    MagicItem *item = head;
+  friend ostream& operator<<(ostream& os, const MagicBag& me) {
+    MagicItem *item = me.head;
     cout << "[";
-    while (item -> next) {
-      cout << item -> value << ", ";
-      item = item -> next;
+    if (item) {
+      while (item -> next) {
+        cout << item -> value << ", ";
+        item = item -> next;
+      }
+      cout << item -> value;
     }
-    cout << item -> value << "]" << endl;
+    cout << "]";
+    return os;
   }
-  int draw() {
+  T draw() {
+    if (!size) {throw(1);} // Empty
     srand (time(NULL)); // set random's seed
     int randIndex = rand() % size;
     MagicItem *before = head;
@@ -69,9 +75,9 @@ public:
     size--;
     return selection -> value;
   }
-  int peek(int item) {
+  int peek(T item) {
     // Throw exception here?
-    if (size == 0) {cout << "No items to peek at" << endl; throw(1);}
+    if (size == 0) {cout << "no items to peek at" << endl;}
     int count = 0;
     MagicItem *baggedItem = head;
     while (baggedItem) {
