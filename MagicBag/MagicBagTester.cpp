@@ -12,6 +12,7 @@ int main(){
   bag.insert(2);
   bag.insert(50);
   bag.insert(9);
+  bag.print();
   cout << bag.draw() << endl;
   cout << bag.peek(9) << endl;
   bag.print();

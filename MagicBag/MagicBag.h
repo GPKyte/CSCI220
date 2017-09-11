@@ -15,15 +15,29 @@ private:
     int value;
   };
   int size;
-  MagicItem * start; // -> MemRef of first item
-  MagicItem * end;   // -> '' of last item
+  MagicItem *start; // -> MemRef of first item
+  MagicItem *end;   // -> '' of last item
 public:
   MagicBag() {
     size = 0;
     start = nullptr;
     end = nullptr;
   }
-  MagicBag(const MagicBag& other) {}
+  MagicBag(const MagicBag& other) {
+    size = other.size;
+    start = new MagicItem();
+    end = start;
+    start -> value = other.start -> value;
+    // Go to each item and make copy, link items
+    MagicItem *original = other.start -> next;
+    while (original) {
+      MagicItem *copy = new MagicItem();
+      copy -> value = original -> value;
+      end = copy;
+      original = original -> next;
+    }
+
+  }
   ~MagicBag(){}
 
   void insert(int value) {
@@ -45,25 +59,19 @@ public:
     cout << item -> value << "]" << endl;
   }
   int draw() {
-    //srand ( time(NULL) ); // set random's seed
+    srand ( time(NULL) ); // set random's seed
+    int randIndex = rand() % size;
+    size--;
     MagicItem * previous = nullptr;
     MagicItem * item = start;
-
-    //int randIndex = rand() % size;
-    int randIndex = 0;
-    cout << "In bag. Draw #" << randIndex << endl;
     if (randIndex == 0) {
       start = start -> next;
       return item -> value;
     }
-
-    // Note that we start i at 1 because we start before the loop
-    // also we add one to stop early and link to surrounding items in list
-    for (int i = 1; i < randIndex; i++) {
+    for (int i = 0; i < randIndex; i++) {
+      previous = item;
       item = item -> next;
     }
-    previous = item;
-    item = item -> next;
     previous -> next = item -> next;
     return item -> value;
   }
@@ -78,4 +86,8 @@ public:
     }
     return count;
   }
+  // MagicBag& operator=(const MagicBag& other) {
+  //   // Copy contents of other into this bag
+  //   return other;
+  // }
 };
