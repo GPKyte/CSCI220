@@ -15,32 +15,33 @@ private:
     int value;
   };
   int size;
-  MagicItem *start; // -> MemRef of first item
-  MagicItem *head;   // -> '' of last item
+  MagicItem *head;  // -> '' of last item
 public:
   MagicBag() {
     size = 0;
     head = nullptr;
   }
-  // MagicBag(const MagicBag& other) {
-  //   size = other.size;
-  //   start = new MagicItem();
-  //   end = start;
-  //   start -> value = other.start -> value;
-  //   // Go to each item and make copy, link items
-  //   MagicItem *original = other.start -> next;
-  //   while (original) {
-  //     MagicItem *copy = new MagicItem();
-  //     copy -> value = original -> value;
-  //     end = copy;
-  //     original = original -> next;
-  //   }
-  //
-  // }
-  ~MagicBag(){}
-
+  MagicBag(const MagicBag& other) {
+    size = other.size;
+    head = nullptr;
+    // Go to each item and make a copy and make links
+    MagicItem *original = other.head;
+    while (original) {
+      MagicItem *copy = new MagicItem();
+      copy -> value = original -> value;
+      copy -> next = head;
+      head = copy;
+      original = original -> next;
+    }
+  }
+  ~MagicBag() {
+    while (head) {
+      MagicItem *next = head -> next;
+      delete head;
+      head = next;
+    }
+  }
   void insert(int value) {
-
     MagicItem *item = new MagicItem();
     item -> value = value;
     item -> next = head;
@@ -57,7 +58,7 @@ public:
     cout << item -> value << "]" << endl;
   }
   int draw() {
-    srand ( time(NULL) ); // set random's seed
+    srand (time(NULL)); // set random's seed
     int randIndex = rand() % size;
     MagicItem *before = head;
     for (int i = 1; i < randIndex; i++) {
