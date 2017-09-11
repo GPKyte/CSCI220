@@ -16,43 +16,41 @@ private:
   };
   int size;
   MagicItem *start; // -> MemRef of first item
-  MagicItem *end;   // -> '' of last item
+  MagicItem *head;   // -> '' of last item
 public:
   MagicBag() {
     size = 0;
-    start = nullptr;
-    end = nullptr;
+    head = nullptr;
   }
-  MagicBag(const MagicBag& other) {
-    size = other.size;
-    start = new MagicItem();
-    end = start;
-    start -> value = other.start -> value;
-    // Go to each item and make copy, link items
-    MagicItem *original = other.start -> next;
-    while (original) {
-      MagicItem *copy = new MagicItem();
-      copy -> value = original -> value;
-      end = copy;
-      original = original -> next;
-    }
-
-  }
+  // MagicBag(const MagicBag& other) {
+  //   size = other.size;
+  //   start = new MagicItem();
+  //   end = start;
+  //   start -> value = other.start -> value;
+  //   // Go to each item and make copy, link items
+  //   MagicItem *original = other.start -> next;
+  //   while (original) {
+  //     MagicItem *copy = new MagicItem();
+  //     copy -> value = original -> value;
+  //     end = copy;
+  //     original = original -> next;
+  //   }
+  //
+  // }
   ~MagicBag(){}
 
   void insert(int value) {
-    //cout << "end value is " << end -> getValue() << endl;
+
     MagicItem *item = new MagicItem();
     item -> value = value;
-    if (size == 0) {start = item;}
-    if (end) {end -> next = item;}
-    end = item;
+    item -> next = head;
+    head = item;
     size++;
   }
   void print() {
-    MagicItem *item = start;
+    MagicItem *item = head;
     cout << "[";
-    for (int i = 0; i+1 < size; i++) {
+    while (item -> next) {
       cout << item -> value << ", ";
       item = item -> next;
     }
@@ -61,26 +59,21 @@ public:
   int draw() {
     srand ( time(NULL) ); // set random's seed
     int randIndex = rand() % size;
+    MagicItem *before = head;
+    for (int i = 1; i < randIndex; i++) {
+      before = before -> next;
+    }
+    MagicItem *selection = before -> next;
+    before -> next = selection -> next; // Remove selection, link before and after
     size--;
-    MagicItem * previous = nullptr;
-    MagicItem * item = start;
-    if (randIndex == 0) {
-      start = start -> next;
-      return item -> value;
-    }
-    for (int i = 0; i < randIndex; i++) {
-      previous = item;
-      item = item -> next;
-    }
-    previous -> next = item -> next;
-    return item -> value;
+    return selection -> value;
   }
   int peek(int item) {
-    // Put exception here?
-    if (size == 0) {cout << "No items to peek at" << endl;}
+    // Throw exception here?
+    if (size == 0) {cout << "No items to peek at" << endl; throw(1);}
     int count = 0;
-    MagicItem *baggedItem = start;
-    for (int i = 0; i < size; i++) {
+    MagicItem *baggedItem = head;
+    while (baggedItem) {
       if (baggedItem -> value == item) {count++;}
       baggedItem = baggedItem -> next;
     }
