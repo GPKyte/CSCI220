@@ -7,6 +7,16 @@
 using namespace std;
 
 int main(){
+  // Shallow example to show that bag can hold as much as memory allows
+  // MagicBag<int> infiniteBag;
+  // int i = 0;
+  // while (i < 999999) {
+  //   infiniteBag.insert(9);
+  //   i++;
+  // }
+  // cout << infiniteBag << endl;
+  // return 0;
+
   MagicBag<int> interestingBag;
   MagicBag<float> floatingBag;
   MagicBag<double> bDubsBag;
@@ -48,5 +58,39 @@ int main(){
   cout << "   Drew a " << enlightenedBag.draw() << " randomly from bool bag." << endl;
   cout << endl;
 
+  cout << "operator =:" << endl;
+  MagicBag<int> a;
+  cout << "   Bag a before assignment: " << a << endl;
+  a = interestingBag;
+  cout << "   Bag a after assignment:  " << a << endl;
+  cout << endl;
+
+  cout << "Bags in bags:" << endl;
+  MagicBag<MagicBag<bool>> superbag;
+  superbag.insert(enlightenedBag);
+  superbag.insert(enlightenedBag);
+  cout << "   Bagception: " << superbag << endl;
+  // cout << "Peeking " << superbag.peek(superbag) << endl; // Can't do binary comparison and .equals() DNE
+  cout << "   Draw bag: " << superbag.draw() << endl;
+  cout << "   Draw bag's bag's item: " << (superbag.draw()).draw() << endl;
+  cout << endl;
+
+  cout << "Edge cases:" << endl;
+  MagicBag<int> edgeBag;
+  edgeBag.insert(5);
+  cout << "   Peek with only one item: " << edgeBag.peek(5) << endl;
+  cout << "   Peek with diff data type: " << edgeBag.peek('5') << endl;
+  cout << "   Draw with only one item: " << edgeBag.draw() << endl;
+  cout << "   Peek with no items: " << edgeBag.peek(5) << endl;
+  cout << "   The next line will be an intentially thrown error" << endl << "[Press ENTER]";
+  cin.get();
+  cout << "   Draw on empty bag: " << endl;
+  try {
+    cout << "   " << edgeBag.draw() << endl;
+  } catch (char const* code) {
+    cout << "Could not draw from bag. Reason: " << code << endl;
+    cout << "End Main" << endl;
+    return 0;
+  }
   return 0;
 }
