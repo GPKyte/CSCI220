@@ -90,7 +90,7 @@ int main(){
   } catch (char const* code) {
     cout << "Could not draw from bag. Reason: " << code << endl;
     cout << "End Main" << endl;
-    return 0;
+    return 1;
   }
   return 0;
 }

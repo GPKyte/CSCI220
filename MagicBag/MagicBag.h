@@ -8,6 +8,7 @@
 #include <exception>
 using namespace std;
 
+// Implemented with a linked list
 template <class T>
 class MagicBag {
 private:
@@ -16,7 +17,7 @@ private:
     T value;
   };
   int size;
-  MagicItem *head;  // -> '' of last item
+  MagicItem *head;  // points to last item
 public:
   MagicBag() {
     size = 0;
@@ -49,14 +50,16 @@ public:
     head = item;
     size++;
   }
+  // Remove a random item from the Bag
+  // "Empty" is thrown if the bag is empty
   T draw() {
     if (!size) {throw("Empty");} // Empty
     srand (time(NULL)); // set random's seed
     int randIndex = rand() % size;
     MagicItem *selection = head;
-    if (randIndex == 0) {
+    if (randIndex == 0) { // Handle special case where head needs updated
       head = head -> next;
-    } else {
+    } else { // Common case
       MagicItem *before = selection;
       for (int i = 1; i < randIndex; i++) {
         before = before -> next;
@@ -67,6 +70,8 @@ public:
     size--;
     return selection -> value;
   }
+  // Counts matches
+  // requires a primitive data type for comparison
   int peek(T item) {
     int count = 0;
     MagicItem *baggedItem = head;
@@ -76,10 +81,11 @@ public:
     }
     return count;
   }
+  // Print out a [] list of values in bag
   friend ostream& operator<<(ostream& os, const MagicBag& me) {
     MagicItem *item = me.head;
     cout << "[";
-    if (item) {
+    if (item) { // account for empty bag
       while (item -> next) {
         cout << item -> value << ", ";
         item = item -> next;
@@ -90,7 +96,7 @@ public:
     return os;
   }
   MagicBag& operator=(MagicBag other) {
-    // Copy contents of other into this bag
+    // Copy contents of other into this
     swap(*this, other);
     return *this;
   }
