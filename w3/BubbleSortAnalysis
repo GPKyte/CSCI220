@@ -1,0 +1,12 @@
+// Gavin Kyte
+// Tue Sep 12 13:43:23 2017
+
+do
+  swapped = false
+  for i = 1 to indexOfLastUnsortedElement-1
+    if leftElement > rightElement
+      swap(leftElement, rightElement)
+      swapped = true
+while swapped
+
+O(n^2)

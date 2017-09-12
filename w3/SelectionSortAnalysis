@@ -1,0 +1,13 @@
+// Gavin Kyte
+// Tue Sep 12 13:45:50 2017
+
+int temp;
+for (int i = 1; i < n; i++) {
+  for (int j = i; j > 0 && ary[j-1] > ary[j]; j--) {
+    temp = ary[j];
+    ary[j] = ary[j-1];
+    ary[j-1] = temp;
+  }
+}
+
+// O(n^2) 5n^2 + 3n + 2
