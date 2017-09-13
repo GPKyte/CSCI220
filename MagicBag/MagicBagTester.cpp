@@ -28,11 +28,16 @@ int main(){
   char alphabet[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
   bool truth[] = {true,false,true,false,false,false,true,false,false,true,true};
 
-  for (int n : numbers) {interestingBag.insert(n);}
-  for (float f : floaters) {floatingBag.insert(f);}
-  for (double d : bdubs) {bDubsBag.insert(d);}
-  for (char c : alphabet) {charredBag.insert(c);}
-  for (bool b : truth) {enlightenedBag.insert(b);}
+  for (int i=0; i < sizeof(numbers)/sizeof(numbers[0]); i++)
+    {interestingBag.insert(numbers[i]);}
+  for (int i=0; i < sizeof(floaters)/sizeof(floaters[0]); i++)
+    {floatingBag.insert(floaters[i]);}
+  for (int i=0; i < sizeof(bdubs)/sizeof(bdubs[0]); i++)
+    {bDubsBag.insert(bdubs[i]);}
+  for (int i=0; i < sizeof(alphabet)/sizeof(alphabet[0]); i++)
+    {charredBag.insert(alphabet[i]);}
+  for (int i=0; i < sizeof(truth)/sizeof(truth[0]); i++)
+    {enlightenedBag.insert(truth[i]);}
 
   cout << "operator <<:" << endl;
   cout << "   int:    " << interestingBag << endl;
@@ -66,7 +71,7 @@ int main(){
   cout << endl;
 
   cout << "Bags in bags:" << endl;
-  MagicBag<MagicBag<bool>> superbag;
+  MagicBag<MagicBag<bool> > superbag;
   superbag.insert(enlightenedBag);
   superbag.insert(enlightenedBag);
   cout << "   Bagception: " << superbag << endl;
