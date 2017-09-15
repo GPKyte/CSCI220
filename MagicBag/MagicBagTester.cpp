@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <string>
 #include "MagicBag.h"
 using namespace std;
 
@@ -22,11 +23,13 @@ int main(){
   MagicBag<double> bDubsBag;
   MagicBag<char> charredBag;
   MagicBag<bool> enlightenedBag;
+  MagicBag<string> bookBag;
   int numbers[] = {1,2,9,0,8,5,87,45,3,56,7,99,1,87,87,87,2,23};
   float floaters[] = {1.2,9.009,8.5,8.7,45.3,56.7,9.91,87.87,8.7,2.23};
   double bdubs[] = {1.2,9.009,8.5,8.7,1.2,1.2,1.2,1.2,1.2,1.2,8.7,2.23};
   char alphabet[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
   bool truth[] = {true,false,true,false,false,false,true,false,false,true,true};
+  string dictionary[] = {"Hello","this","is","world"};
 
   for (int i=0; i < sizeof(numbers)/sizeof(numbers[0]); i++)
     {interestingBag.insert(numbers[i]);}
@@ -38,6 +41,8 @@ int main(){
     {charredBag.insert(alphabet[i]);}
   for (int i=0; i < sizeof(truth)/sizeof(truth[0]); i++)
     {enlightenedBag.insert(truth[i]);}
+  for (int i=0; i < sizeof(dictionary)/sizeof(dictionary[0]); i++)
+    {bookBag.insert(dictionary[i]);}
 
   cout << "operator <<:" << endl;
   cout << "   int:    " << interestingBag << endl;
@@ -45,6 +50,7 @@ int main(){
   cout << "   double: " << bDubsBag << endl;
   cout << "   char:   " << charredBag << endl;
   cout << "   bool:   " << enlightenedBag << endl;
+  cout << "   string: " << bookBag << endl;
   cout << endl;
 
   cout << "int peek(T item):" << endl;
@@ -53,6 +59,7 @@ int main(){
   cout << "   Peeked for double 1.2 and found it " << bDubsBag.peek(1.2) << " times" << endl;
   cout << "   Peeked for char 'c' and found it " << charredBag.peek('c') << " times" << endl;
   cout << "   Peeked for bool true and found it " << enlightenedBag.peek(true) << " times" << endl;
+  cout << "   Peeked for string 'Hello' and found it " << bookBag.peek("Hello") << " times" << endl;
   cout << endl;
 
   cout << "T draw():" << endl;
@@ -61,6 +68,7 @@ int main(){
   cout << "   Drew a " << bDubsBag.draw() << " randomly from double bag." << endl;
   cout << "   Drew a " << charredBag.draw() << " randomly from char bag." << endl;
   cout << "   Drew a " << enlightenedBag.draw() << " randomly from bool bag." << endl;
+  cout << "   Drew a " << bookBag.draw() << " randomly from string bag." << endl;
   cout << endl;
 
   cout << "operator =:" << endl;
