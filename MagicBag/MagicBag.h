@@ -40,7 +40,7 @@ public:
     while (head) {
       MagicItem *next = head -> next;
       delete head;
-      head = next;
+      head = next; // Eventually head set to NULL
     }
   }
   void insert(T value) {
