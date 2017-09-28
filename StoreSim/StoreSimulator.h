@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <vector>
 
-#include "Customer.cpp"
-#include "Event.cpp"
-#include "PriorityQueue.cpp"
+#include "Customer.h"
+#include "Event.h"
+#include "PriorityQueue.h"
 #include "RegisterQueue.h"
 using namespace std;
 
