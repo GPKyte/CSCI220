@@ -13,7 +13,7 @@ using namespace std;
 class StoreSimulator{
 
 private:
-  MyPriorityQueue<Event> events;
+  PriorityQueue<Event> events;
   vector<RegisterQueue> registers;
   double simClock;
 
@@ -23,7 +23,7 @@ public:
   }
 
   void startSimulation() {
-    loadRegisters( 6, 4);
+    loadRegisters(6, 4);
     loadCustomerData();
 
     while(events.size > 0){
@@ -45,7 +45,7 @@ public:
 
     ifstream myfile ("arrival.txt");
     if (myfile.is_open()){
-      while ( myfile >> simTime >> items >> avgSelectionTime){
+      while (myfile >> simTime >> items >> avgSelectionTime){
 
         Customer cust(simClock, items, avgSelectionTime) ;
         cout << cust << endl;
@@ -83,6 +83,4 @@ public:
   void handleEndCheckout(Event& e){
 
   }
-
-
 };
