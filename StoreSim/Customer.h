@@ -4,9 +4,22 @@
 
 class Customer {
 private:
+  double simClock;
+  int items;
+  double avgSelectionTime;
+  int registerNum;
 
 public:
-  Customer(double simClock, int items, double avgSelectionTime) {}
-  ~Customer() {}
-
+  Customer(double simClock, int items, double avgSelectionTime) {
+    this->simClock = simClock;
+    this->items = items;
+    this->avgSelectionTime = avgSelectionTime;
+    registerNum = -1;
+  }
+  ~Customer() {delete(this);}
+  void chooseRegister(int num) {registerNum = num;}
+  int getRegister() {return registerNum;}
+  int getOrderSize() {return items;}
+  double getCustomerArrival() {return simClock;}
+  double getTimeToGetItem() {return avgSelectionTime;}
 };
