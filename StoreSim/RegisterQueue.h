@@ -17,7 +17,6 @@ private:
   Node *front;
   Node *rear;
 
-
 public:
   int numberOfCustomers;
   int maxLineLength;
@@ -53,5 +52,8 @@ public:
     front->previous = nullptr;
     numberOfCustomers--;
     return person;
+  }
+  Customer seeNext() {
+    return front->value();
   }
 };

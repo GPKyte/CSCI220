@@ -85,14 +85,23 @@ public:
         min = i;
     }
     RegisterQueue r = registers[min];
-    double finishCheckout = r.minToPay + (c.getOrderSize() * r.minPerItem);
-    Event next(EventType::EndCheckout, finishCheckout, c);
+    c.chooseRegister(min);
+    if(r.numberOfCustomers == 0) {
+      double finishCheckout = r.minToPay + (c.getOrderSize() * r.minPerItem);
+      Event next(EventType::EndCheckout, finishCheckout, c);
+      events.enqueue(next)
+    }
+    // If waiting in line, their EndCheckout is scheduled once they are up
     r.enqueue(c);
-    events.enqueue(next);
   }
 
   void handleEndCheckout(Event& e){
-    Customer c = e.person;
-
+    Customer current = e.person;
+    RegisterQueue r = registers[current.getRegister()];
+    r.dequeue();
+    Customer c = r.seeNext();
+    double finishCheckout = r.minToPay + (c.getOrderSize() * r.minPerItem);
+    Event next(EventType::EndCheckout, finishCheckout, c);
+    events.enqueue(next);
   }
 };
