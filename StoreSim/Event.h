@@ -1,6 +1,7 @@
 // Gavin Kyte
 // Thu Sep 28 16:31:27 2017
 #pragma once
+#include <utility> // So to only overload operations < and ==
 #include "Customer.h"
 enum EventType {Arrival, EndShopping, EndCheckout};
 
@@ -15,5 +16,11 @@ public:
     event = e;
     this->simTime = simTime;
     person = cust;
+  }
+  bool operator<(Event& e const) {
+    return this->simTime < e.simTime;
+  }
+  bool operator==(Event& e const) {
+    return this->simTime == e.simTime;
   }
 };
