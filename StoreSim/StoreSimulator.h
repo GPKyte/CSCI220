@@ -77,10 +77,22 @@ public:
   }
 
   void handleEndShopping(Event& e){
-
+    Customer c = e.person;
+    // Find lane with least # of people
+    int min = 0;
+    for (int i = 1; i < registers.size(); i++) {
+      if (registers[i].numberOfCustomers < registers[min].numberOfCustomers)
+        min = i;
+    }
+    RegisterQueue r = registers[min];
+    double finishCheckout = r.minToPay + (c.getOrderSize() * r.minPerItem);
+    Event next(EventType::EndCheckout, finishCheckout, c);
+    r.enqueue(c);
+    events.enqueue(next);
   }
 
   void handleEndCheckout(Event& e){
+    Customer c = e.person;
 
   }
 };

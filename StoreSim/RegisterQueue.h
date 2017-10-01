@@ -14,8 +14,6 @@ private:
       this->next = nullptr;
     }
   };
-  double minToPay;
-  double minPerItem;
   Node *front;
   Node *rear;
 
@@ -23,6 +21,8 @@ private:
 public:
   int numberOfCustomers;
   int maxLineLength;
+  double minToPay;
+  double minPerItem;
   RegisterQueue(double minToPay, double minPerItem) {
     front, rear = nullptr;
     maxLineLength = 8;
@@ -38,7 +38,7 @@ public:
   void enqueue(Customer cust) {
     if(numberOfCustomers >= maxLineLength)
       throw("FullLineException");
-    Node next = new Node(cust, rear);
+    Node *next = new Node(cust, rear);
     if(!numberOfCustomers)
       front = next;
     if(rear)
