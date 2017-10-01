@@ -1,6 +1,6 @@
 #pragma once
 
-template <class T> class MyPriorityQueue{
+template <class T> class PriorityQueue{
 private:
 
 

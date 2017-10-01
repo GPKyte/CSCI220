@@ -1,11 +1,12 @@
 // Gavin Kyte
 // Thu Sep 28 16:32:09 2017
+#pragma once
 
-#include <iostream>
-#include <iomanip>
-using namespace std;
+class Customer {
+private:
 
-int main(){
-  return 0;
-}
+public:
+  Customer(double simClock, int items, double avgSelectionTime) {}
+  ~Customer() {}
 
+};

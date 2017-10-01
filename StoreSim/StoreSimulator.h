@@ -22,8 +22,8 @@ public:
     simClock = 0;
   }
 
-  void startSimulation() {
-    loadRegisters(6, 4);
+  void startSimulation(int numNormal, int numSelfScan) {
+    loadRegisters(numNormal, numSelfScan);
     loadCustomerData();
 
     while(events.size > 0){

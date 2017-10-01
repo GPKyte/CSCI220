@@ -1,11 +1,19 @@
 // Gavin Kyte
 // Thu Sep 28 16:31:27 2017
+#pragma once
+#include "Customer.h"
+enum EventType {Arrival, EndShopping, EndCheckout};
 
-#include <iostream>
-#include <iomanip>
-using namespace std;
+class Event {
+private:
 
-int main(){
-  return 0;
-}
-
+public:
+  EventType event;
+  double simTime;
+  Customer person;
+  Event(EventType e, double simTime, Customer cust) {
+    event = e;
+    this->simTime = simTime;
+    person = cust;
+  }
+};
