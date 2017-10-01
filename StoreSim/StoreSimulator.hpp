@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <vector>
 
-#include "Customer.h"
-#include "Event.h"
-#include "PriorityQueue.h"
-#include "RegisterQueue.h"
+#include "Customer.hpp"
+#include "Event.hpp"
+#include "PriorityQueue.hpp"
+#include "RegisterQueue.hpp"
 using namespace std;
 
 class StoreSimulator{

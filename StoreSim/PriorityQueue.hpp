@@ -1,5 +1,5 @@
 #pragma once
-#include "Customer.h"
+#include "Customer.hpp"
 
 template <class T> class PriorityQueue{
 private:

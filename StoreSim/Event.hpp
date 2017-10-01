@@ -2,7 +2,7 @@
 // Thu Sep 28 16:31:27 2017
 #pragma once
 #include <utility> // So to only overload operations < and ==
-#include "Customer.h"
+#include "Customer.hpp"
 enum EventType {Arrival, EndShopping, EndCheckout};
 
 class Event {
