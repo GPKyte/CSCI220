@@ -23,9 +23,11 @@ public:
   double minToPay;
   double minPerItem;
   RegisterQueue(double minToPay, double minPerItem) {
-    front, rear = nullptr;
+    front = rear = nullptr;
     maxLineLength = 8;
     numberOfCustomers = 0;
+    this->minToPay = minToPay;
+    this->minPerItem = minPerItem;
   }
   ~RegisterQueue() {
     while (front) {
@@ -54,6 +56,6 @@ public:
     return person;
   }
   Customer seeNext() {
-    return front->value();
+    return front->value;
   }
 };

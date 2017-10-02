@@ -9,18 +9,30 @@ class Event {
 private:
 
 public:
-  EventType event;
+  EventType type;
   double simTime;
   Customer person;
   Event(EventType e, double simTime, Customer cust) {
-    event = e;
+    type = e;
     this->simTime = simTime;
     person = cust;
   }
-  bool operator<(Event& e const) {
-    return this->simTime < e.simTime;
+  friend bool operator<(const Event& a, const Event& b) {
+    return a.simTime < b.simTime;
   }
-  bool operator==(Event& e const) {
-    return this->simTime == e.simTime;
+  friend bool operator>(const Event& a, const Event& b) {
+    return a.simTime > b.simTime;
+  }
+  friend bool operator>=(const Event& a, const Event& b) {
+    return a.simTime >= b.simTime;
+  }
+  friend bool operator<=(const Event& a, const Event& b) {
+    return a.simTime <= b.simTime;
+  }
+  friend bool operator!=(const Event& a, const Event& b) {
+    return a.simTime != b.simTime;
+  }
+  friend bool operator==(const Event& a, const Event& b) {
+    return a.simTime == b.simTime;
   }
 };

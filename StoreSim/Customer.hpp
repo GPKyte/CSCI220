@@ -10,6 +10,10 @@ private:
   int registerNum;
 
 public:
+  Customer() {
+    simClock = items = avgSelectionTime = 0;
+    registerNum = -1;
+  }
   Customer(double simClock, int items, double avgSelectionTime) {
     this->simClock = simClock;
     this->items = items;

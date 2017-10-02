@@ -6,11 +6,10 @@ private:
   struct Node {
     Node *next;
     Node *previous;
-    Customer value;
+    T value;
     // @next = NULL, this is a shorthand constructor to make NULL the default
-    Node(Customer value, Node *previous = nullptr, Node *next = nullptr) {
+    Node(T& value, Node *previous = nullptr, Node *next = nullptr) : value(value) {
       this->previous = previous;
-      this->value = value;
       this->next = next;
     }
   };
@@ -20,7 +19,7 @@ private:
 public:
   int size;
   PriorityQueue() {
-    head, tail = nullptr;
+    head = tail = nullptr;
   }
   ~PriorityQueue() {
     while(head) {
@@ -31,22 +30,22 @@ public:
   }
   void enqueue(T value) {
     if(!size) {
-      head, tail = new Node(value);
+      head = tail = new Node(value, nullptr, nullptr);
       return;
     }
     // Find place to insert, at tail, head, or body
     if(value < head->value) { // At head
       head = new Node(value, nullptr, head->next);
       head->next->previous = head;
-    } else if(value >= tail->value) { // At tail
+    } else if(tail->value < value) { // At tail
       tail = new Node(value, tail->previous, nullptr);
       tail->previous->next = tail;
     } else {
       Node *body = head->next;
-      while(value >= body->value) {
+      while(body->value < value) {
         body = body->next;
       }
-      body->previous, body->previous->next = new Node(value, body->previous, body);
+      body->previous = body->previous->next = new Node(value, body->previous, body);
     }
     size++;
   }

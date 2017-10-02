@@ -45,7 +45,7 @@ public:
 
     ifstream myfile ("arrival.txt");
     if (myfile.is_open()){
-      while (myfile >> simTime >> items >> avgSelectionTime){
+      while (myfile >> simClock >> items >> avgSelectionTime){
 
         Customer cust(simClock, items, avgSelectionTime) ;
         cout << cust << endl;
@@ -89,7 +89,7 @@ public:
     if(r.numberOfCustomers == 0) {
       double finishCheckout = r.minToPay + (c.getOrderSize() * r.minPerItem);
       Event next(EventType::EndCheckout, finishCheckout, c);
-      events.enqueue(next)
+      events.enqueue(next);
     }
     // If waiting in line, their EndCheckout is scheduled once they are up
     r.enqueue(c);
