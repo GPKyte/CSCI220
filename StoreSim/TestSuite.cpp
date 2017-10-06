@@ -23,6 +23,9 @@ int main(){
   cout << "Order size: " << c.getOrderSize() << endl;
   cout << "Selection speed: " << c.getTimeToGetItem() << endl;
   cout << "Print << result: " << c << endl;
+  cout << "Test copy Customer c2" << endl;
+  Customer c2(c);
+  cout << c2 << endl;
 
   cout << "Test Event" << endl;
   Event e1(EventType::Arrival, 100.00, c);

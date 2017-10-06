@@ -29,6 +29,7 @@ public:
     while(events.size > 0){
       Event e = events.dequeue();
       simClock = e.simTime;
+      cout << "Event at " << simClock << "/1440min: ";
       if(e.type == EventType::Arrival){
         handleArrival(e);
       }else if(e.type == EventType::EndShopping){
@@ -83,33 +84,34 @@ public:
       if (registers[i].numberOfCustomers < registers[min].numberOfCustomers)
         min = i;
     }
-    RegisterQueue r = registers[min];
+    RegisterQueue *r = &registers[min];
     c.chooseRegister(min);
-    if(r.numberOfCustomers == 0) {
-      double finishCheckout = r.minToPay + (c.getOrderSize() * r.minPerItem);
-      cout << "Customer " << c << " checking out at " << finishCheckout << endl;
+    if(r->numberOfCustomers == 0) {
+      double finishCheckout = e.simTime + r->minToPay + (c.getOrderSize() * r->minPerItem);
+      cout << "Customer " << c << " will finish checking out at " << finishCheckout << endl;
       Event next(EventType::EndCheckout, finishCheckout, c);
       events.enqueue(next);
+      return;
     }
     // If waiting in line, their EndCheckout is scheduled once they are up
-    r.enqueue(c);
+    r->enqueue(c);
     cout << "Customer " << c << " waiting in line " << min << endl;
   }
 
   void handleEndCheckout(Event& e){
     Customer current = e.person;
     int lane = current.getRegister();
-    RegisterQueue r = registers[lane];
+    RegisterQueue *r = &registers[lane];
     cout << "Customer " << current << " finished checking out from register " << lane << endl;
     try {
-      r.dequeue();
-    } catch(int e) {
-      cout << "register was empty (caught error). Moving on." << endl;
+      r->dequeue();
+    } catch(char const* e) {
+      cout << "- Caught eror: " << e << endl;
     }
-    if (r.numberOfCustomers > 0) {
-      Customer c = r.seeNext();
-      double finishCheckout = r.minToPay + (c.getOrderSize() * r.minPerItem);
-      cout << "Customer " << c << " checking out at " << finishCheckout << endl;
+    if (r->numberOfCustomers > 0) {
+      Customer c = r->seeNext();
+      double finishCheckout = e.simTime + r->minToPay + (c.getOrderSize() * r->minPerItem);
+      cout << "Customer " << c << " will finish checking out at " << finishCheckout << endl;
       Event next(EventType::EndCheckout, finishCheckout, c);
       events.enqueue(next);
     }
