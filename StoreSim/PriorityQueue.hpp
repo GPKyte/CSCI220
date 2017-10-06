@@ -31,21 +31,19 @@ public:
     }
   }
   void enqueue(T value) {
-    std::cout << "In enqueue, adding " << value.type << " to index " << size << std::endl;
     if(!size) {
       head = tail = new Node(value, nullptr, nullptr);
       size++;
       return;
     }
     // Find place to insert, at tail, head, or body
-    if(value < head->value) { // At head
-      std::cout << "value is < head's value" << std::endl;
+    if(value < head->value) { // Insert before head
       head = new Node(value, nullptr, head);
       head->next->previous = head;
-    } else if(tail->value < value) { // At tail
-      tail = new Node(value, tail->previous, nullptr);
-      tail->previous->next = tail;
-    } else {
+    } else if(value >= tail->value) { // Append to tail
+      tail->next = new Node(value, tail, nullptr);
+      tail = tail->next;
+    } else { // Insert in the middle
       Node *body = head->next;
       while(body->value < value) {
         body = body->next;
@@ -55,10 +53,14 @@ public:
     size++;
   }
   T dequeue() {
+    if (!size)
+      throw("EmptyQueueException");
+    // Note: not sure if tail needs to be handled on size==1 case
+    // since it will be replaced on enqueue anyway
+    Node *tmp = head;
     T value = head->value;
     head = head->next;
-    delete(head->previous);
-    head->previous = nullptr;
+    delete(tmp);
     size--;
     return value;
   }
