@@ -1,5 +1,6 @@
 #pragma once
 #include "Customer.hpp"
+#include <iostream>
 
 template <class T> class PriorityQueue{
 private:
@@ -20,6 +21,7 @@ public:
   int size;
   PriorityQueue() {
     head = tail = nullptr;
+    size = 0;
   }
   ~PriorityQueue() {
     while(head) {
@@ -29,13 +31,16 @@ public:
     }
   }
   void enqueue(T value) {
+    std::cout << "In enqueue, adding " << value.type << " to index " << size << std::endl;
     if(!size) {
       head = tail = new Node(value, nullptr, nullptr);
+      size++;
       return;
     }
     // Find place to insert, at tail, head, or body
     if(value < head->value) { // At head
-      head = new Node(value, nullptr, head->next);
+      std::cout << "value is < head's value" << std::endl;
+      head = new Node(value, nullptr, head);
       head->next->previous = head;
     } else if(tail->value < value) { // At tail
       tail = new Node(value, tail->previous, nullptr);

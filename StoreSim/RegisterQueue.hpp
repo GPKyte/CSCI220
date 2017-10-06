@@ -39,21 +39,22 @@ public:
   void enqueue(Customer cust) {
     if(numberOfCustomers >= maxLineLength)
       throw("FullLineException");
+    if(!numberOfCustomers) // Starting list scenario
+      front = rear = new Node(cust, nullptr);
+
     Node *next = new Node(cust, rear);
-    if(!numberOfCustomers)
-      front = next;
-    if(rear)
-      rear->next = next;
+    rear->next = next;
     rear = next;
     numberOfCustomers++;
   }
-  Customer dequeue() {
-    Customer person = front->value;
-    front = front->next;
-    delete(front->previous);
-    front->previous = nullptr;
+  void dequeue() {
+    if (!numberOfCustomers)
+      throw(1);
+    Node *next = front->next;
+    delete(front);
+    next->previous = nullptr;
+    front = next;
     numberOfCustomers--;
-    return person;
   }
   Customer seeNext() {
     return front->value;
