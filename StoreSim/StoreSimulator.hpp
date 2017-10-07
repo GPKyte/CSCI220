@@ -52,6 +52,8 @@ public:
         Event e(EventType::Arrival, simClock, cust);
         events.enqueue(e);
       }
+      myfile.clear();
+      myfile.seekg(0, myfile.beg);
       myfile.close();
     }else
     throw(1);
@@ -98,7 +100,7 @@ public:
     int lane = out.getRegister();
     RegisterQueue *r = &registers[lane];
 
-    // Calculate wait time = EndCheckout - (arrival + shopTime + checkoutTime)
+    // Calculate wait time = EndCheckout - (arrival + shopTime + checkoutTime) = EndCheckout - EndShopping
     double wait = e.simTime // EndCheckout
                   - (out.getCustomerArrival() // arrival
                      + (out.getOrderSize() * out.getTimeToGetItem()) // shopTime
@@ -132,5 +134,7 @@ public:
         maxLineLength = registers[i].maxLineLength;
     }
     cout << "Most customers in line at once " << maxLineLength << endl;
+    waitTimes.clear();
+    registers.clear();
   }
 };
