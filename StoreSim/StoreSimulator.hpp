@@ -15,6 +15,7 @@ class StoreSimulator{
 private:
   PriorityQueue<Event> events;
   vector<RegisterQueue> registers;
+  vector<double> waitTimes;
   double simClock;
 
 public:
@@ -38,6 +39,7 @@ public:
         handleEndCheckout(e);
       }
     }
+    endSimulation();
   }
 
   void loadCustomerData(){
@@ -93,26 +95,50 @@ public:
       cout << "Customer " << c << " has started checking out" << endl;
       Event next(EventType::EndCheckout, finishCheckout, c);
       events.enqueue(next);
-      return;
+    } else {
+      cout << "Customer " << c << " waiting in line " << min << endl;
     }
-    cout << "Customer " << c << " waiting in line " << min << endl;
   }
-
   void handleEndCheckout(Event& e){
-    Customer current = e.person;
-    int lane = current.getRegister();
+    Customer out = e.person;
+    int lane = out.getRegister();
     RegisterQueue *r = &registers[lane];
-    cout << "Customer " << current << " finished checking out from register " << lane << endl;
+
+    // Calculate wait time = EndCheckout - (arrival + shopTime + checkoutTime)
+    double wait = e.simTime // EndCheckout
+                  - (out.getCustomerArrival() // arrival
+                     + (out.getOrderSize() * out.getTimeToGetItem()) // shopTime
+                     + r->minToPay + (out.getOrderSize() * r->minPerItem)); // checkoutTime
+    waitTimes.push_back(wait);
+
+    // Let person leave simulation
     try {
       r->dequeue();
     } catch(char const* e) {
       cout << "- Caught eror: " << e << endl;
     }
+    cout << "Customer " << out << " finished checking out from register " << lane << endl;
+    // Check out next person in line
     if (r->numberOfCustomers > 0) {
       Customer c = r->seeNext();
       double finishCheckout = e.simTime + r->minToPay + (c.getOrderSize() * r->minPerItem);
       Event next(EventType::EndCheckout, finishCheckout, c);
       events.enqueue(next);
     }
+  }
+  void endSimulation() {
+    double avgWait = 0;
+    for(int i = 0; i < waitTimes.size(); i++) {
+      avgWait += waitTimes[i];
+      cout << i+1 << ": " << waitTimes[i] << endl;
+    }
+    avgWait /= waitTimes.size();
+    cout << "Average wait time was " << avgWait << endl;
+    int maxLineLength = registers[0].maxLineLength;
+    for(int i = 1; i < registers.size(); i++) {
+      if(registers[i].maxLineLength > maxLineLength)
+        maxLineLength = registers[i].maxLineLength;
+    }
+    cout << "Most customers in line at once " << maxLineLength << endl;
   }
 };

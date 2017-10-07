@@ -24,7 +24,7 @@ public:
   double minPerItem;
   RegisterQueue(double minToPay, double minPerItem) {
     front = rear = nullptr;
-    maxLineLength = 800;
+    maxLineLength = 0;
     numberOfCustomers = 0;
     this->minToPay = minToPay;
     this->minPerItem = minPerItem;
@@ -37,10 +37,7 @@ public:
     }
   }
   void enqueue(Customer cust) {
-    if(numberOfCustomers >= maxLineLength)
-      throw("FullLineException");
-
-    if(!numberOfCustomers) {// Starting list scenario
+    if(!numberOfCustomers) { // Starting list scenario
       front = rear = new Node(cust, nullptr);
     } else {
       Node *next = new Node(cust, rear);
@@ -48,6 +45,8 @@ public:
       rear = next;
     }
     numberOfCustomers++;
+    if(numberOfCustomers > maxLineLength)
+      maxLineLength = numberOfCustomers;
   }
   Customer dequeue() {
     if (!numberOfCustomers)
