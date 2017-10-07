@@ -24,7 +24,7 @@ public:
   double minPerItem;
   RegisterQueue(double minToPay, double minPerItem) {
     front = rear = nullptr;
-    maxLineLength = 8;
+    maxLineLength = 800;
     numberOfCustomers = 0;
     this->minToPay = minToPay;
     this->minPerItem = minPerItem;

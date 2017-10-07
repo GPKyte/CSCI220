@@ -72,7 +72,7 @@ public:
     Customer c = e.person;
     double finishShopping = c.getCustomerArrival() + (c.getOrderSize() * c.getTimeToGetItem());
     Event next(EventType::EndShopping, finishShopping, c);
-    cout << "Customer " << c << " started shopping at " << finishShopping << endl;
+    cout << "Customer " << c << " started shopping" << endl;
     events.enqueue(next);
   }
 
@@ -86,15 +86,15 @@ public:
     }
     RegisterQueue *r = &registers[min];
     c.chooseRegister(min);
-    if(r->numberOfCustomers == 0) {
+    r->enqueue(c);
+    // If waiting in line, their EndCheckout is scheduled once they are up
+    if(r->numberOfCustomers <= 1) {
       double finishCheckout = e.simTime + r->minToPay + (c.getOrderSize() * r->minPerItem);
-      cout << "Customer " << c << " will finish checking out at " << finishCheckout << endl;
+      cout << "Customer " << c << " has started checking out" << endl;
       Event next(EventType::EndCheckout, finishCheckout, c);
       events.enqueue(next);
       return;
     }
-    // If waiting in line, their EndCheckout is scheduled once they are up
-    r->enqueue(c);
     cout << "Customer " << c << " waiting in line " << min << endl;
   }
 
@@ -111,7 +111,6 @@ public:
     if (r->numberOfCustomers > 0) {
       Customer c = r->seeNext();
       double finishCheckout = e.simTime + r->minToPay + (c.getOrderSize() * r->minPerItem);
-      cout << "Customer " << c << " will finish checking out at " << finishCheckout << endl;
       Event next(EventType::EndCheckout, finishCheckout, c);
       events.enqueue(next);
     }

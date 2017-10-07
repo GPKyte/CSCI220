@@ -24,12 +24,13 @@ public:
   }
   ~Customer() {}
   void chooseRegister(int num) {registerNum = num;}
-  int getRegister() {return registerNum;}
+  int const getRegister() {return registerNum;}
   int const getOrderSize() {return items;}
   double const getCustomerArrival() {return simClock;}
   double const getTimeToGetItem() {return avgSelectionTime;}
   friend std::ostream& operator<<(std::ostream& os, const Customer& c) {
-    std::cout << c.simClock << ", " << c.items << ", " << c.avgSelectionTime;
+    std::cout << '[' << c.simClock << ", " << c.items << ", "
+      << c.avgSelectionTime << ", " << c.registerNum << ']';
     return os;
   }
 };
