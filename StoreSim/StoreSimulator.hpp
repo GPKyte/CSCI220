@@ -30,7 +30,6 @@ public:
     while(events.size > 0){
       Event e = events.dequeue();
       simClock = e.simTime;
-      cout << "Event at " << simClock << "/1440min: ";
       if(e.type == EventType::Arrival){
         handleArrival(e);
       }else if(e.type == EventType::EndShopping){
@@ -50,7 +49,6 @@ public:
     if (myfile.is_open()){
       while (myfile >> simClock >> items >> avgSelectionTime){
         Customer cust(simClock, items, avgSelectionTime) ;
-        cout << cust << endl;
         Event e(EventType::Arrival, simClock, cust);
         events.enqueue(e);
       }
@@ -74,7 +72,6 @@ public:
     Customer c = e.person;
     double finishShopping = c.getCustomerArrival() + (c.getOrderSize() * c.getTimeToGetItem());
     Event next(EventType::EndShopping, finishShopping, c);
-    cout << "Customer " << c << " started shopping" << endl;
     events.enqueue(next);
   }
 
@@ -92,11 +89,8 @@ public:
     // If waiting in line, their EndCheckout is scheduled once they are up
     if(r->numberOfCustomers <= 1) {
       double finishCheckout = e.simTime + r->minToPay + (c.getOrderSize() * r->minPerItem);
-      cout << "Customer " << c << " has started checking out" << endl;
       Event next(EventType::EndCheckout, finishCheckout, c);
       events.enqueue(next);
-    } else {
-      cout << "Customer " << c << " waiting in line " << min << endl;
     }
   }
   void handleEndCheckout(Event& e){
@@ -117,7 +111,6 @@ public:
     } catch(char const* e) {
       cout << "- Caught eror: " << e << endl;
     }
-    cout << "Customer " << out << " finished checking out from register " << lane << endl;
     // Check out next person in line
     if (r->numberOfCustomers > 0) {
       Customer c = r->seeNext();
@@ -130,7 +123,6 @@ public:
     double avgWait = 0;
     for(int i = 0; i < waitTimes.size(); i++) {
       avgWait += waitTimes[i];
-      cout << i+1 << ": " << waitTimes[i] << endl;
     }
     avgWait /= waitTimes.size();
     cout << "Average wait time was " << avgWait << endl;
