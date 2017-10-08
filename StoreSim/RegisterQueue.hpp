@@ -19,13 +19,13 @@ private:
 
 public:
   int numberOfCustomers;
+  int totalCount;
   int maxLineLength;
   double minToPay;
   double minPerItem;
   RegisterQueue(double minToPay, double minPerItem) {
     front = rear = nullptr;
-    maxLineLength = 0;
-    numberOfCustomers = 0;
+    maxLineLength = numberOfCustomers = totalCount = 0;
     this->minToPay = minToPay;
     this->minPerItem = minPerItem;
   }
@@ -37,6 +37,7 @@ public:
     }
   }
   void enqueue(Customer cust) {
+    totalCount++;
     if(!numberOfCustomers) { // Starting list scenario
       front = rear = new Node(cust, nullptr);
     } else {

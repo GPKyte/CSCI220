@@ -127,13 +127,28 @@ public:
       avgWait += waitTimes[i];
     }
     avgWait /= waitTimes.size();
-    cout << "Average wait time was " << avgWait << endl;
+    cout << "Avg wait: " << avgWait << " minutes" << endl;
+
+    cout << "Max line for each register: " << '[' << registers[0].maxLineLength;
     int maxLineLength = registers[0].maxLineLength;
     for(int i = 1; i < registers.size(); i++) {
+      cout << ", " << registers[i].maxLineLength;
       if(registers[i].maxLineLength > maxLineLength)
         maxLineLength = registers[i].maxLineLength;
     }
-    cout << "Most customers in line at once " << maxLineLength << endl;
+    cout << "]" << endl;
+    cout << "Most in line at once: " << maxLineLength << endl;
+    cout << "Total for each register: ";
+    int total = 0;
+    cout << '[';
+    for(int i = 0; i+1 < registers.size(); i++) {
+      cout << registers[i].totalCount << ", ";
+      total += registers[i].totalCount;
+    }
+    cout << registers[registers.size()-1].totalCount << ']' << endl;
+    total += registers[registers.size()-1].totalCount;
+
+    cout << "Total customers: " << total << endl;
     waitTimes.clear();
     registers.clear();
   }

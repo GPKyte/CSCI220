@@ -9,8 +9,9 @@ int main(){
   s.startSimulation(8, 0);
   std::cout << std::endl;
 
-  std::cout << "Testing 6 normal, 4 self checkout. (Repeat twice to confirm results)" << std::endl;
+  std::cout << "Testing 6 normal, 4 self checkout." << std::endl;
   s.startSimulation(6, 4);
+  std::cout << "(Repeat to confirm results)" << std::endl;
   s.startSimulation(6, 4);
   std::cout << std::endl;
 
