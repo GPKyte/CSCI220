@@ -11,6 +11,7 @@
 #include "Event.hpp"
 #include "PriorityQueue.hpp"
 #include "RegisterQueue.hpp"
+#include "StoreSimulator.hpp"
 using namespace std;
 
 int main(){
@@ -85,4 +86,10 @@ int main(){
   } catch(char const* e) {
     cout << "Dequeue when empty gives: " << e << endl;
   }
+  // cout << "In test data 10 identical customers enter at same time and all go in one line" << endl;
+  // StoreSimulator s;
+  // 1.5 min to pay, .1 min per item.
+  // Average wait = first + last / 2 = (0 + 9*(1.5 + 10 .01))/2 = 7.2 min
+  // s.startSimulation(1,0);
+  // s.startSimulation(0,1); // 3.0, .04
 }
