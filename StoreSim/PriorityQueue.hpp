@@ -23,6 +23,7 @@ public:
     head = tail = nullptr;
     size = 0;
   }
+  // O(n) where n = # of Nodes
   ~PriorityQueue() {
     while(head) {
       Node *next = head->next;
@@ -30,6 +31,9 @@ public:
       head = next;
     }
   }
+  // O(1) best case (insert at head or tail)
+  // O(n) worst case (insert right before to tail, instead of after tail)
+  // Usually about n/2 for unsorted data
   void enqueue(T value) {
     if(!size) {
       head = tail = new Node(value, nullptr, nullptr);
@@ -52,6 +56,7 @@ public:
     }
     size++;
   }
+  // O(1) always
   T dequeue() {
     if (!size)
       throw("EmptyQueueException");

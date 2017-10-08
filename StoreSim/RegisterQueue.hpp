@@ -7,7 +7,6 @@ private:
     Node *next; // After previous sequentially
     Node *previous; // First in line
     Customer value;
-    // @next = NULL, this is a shorthand constructor to make NULL the default
     Node(Customer value, Node *previous = nullptr) {
       this->previous = previous;
       this->value = value;
@@ -29,6 +28,7 @@ public:
     this->minToPay = minToPay;
     this->minPerItem = minPerItem;
   }
+  // O(n) where n = # of nodes at time of deletion
   ~RegisterQueue() {
     while (front) {
       Node *next = front->next;
@@ -36,6 +36,7 @@ public:
       front = next;
     }
   }
+  // O(1) since rear is updated, no searching for place to insert
   void enqueue(Customer cust) {
     totalCount++;
     if(!numberOfCustomers) { // Starting list scenario
@@ -49,6 +50,7 @@ public:
     if(numberOfCustomers > maxLineLength)
       maxLineLength = numberOfCustomers;
   }
+  // O(1) always popping off head if it exists
   Customer dequeue() {
     if (!numberOfCustomers)
       throw("QueueEmptyException");
@@ -60,6 +62,7 @@ public:
     numberOfCustomers--;
     return c;
   }
+  // O(1) always
   Customer seeNext() {
     return front->value;
   }

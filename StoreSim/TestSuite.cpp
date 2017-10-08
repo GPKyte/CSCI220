@@ -86,6 +86,8 @@ int main(){
   } catch(char const* e) {
     cout << "Dequeue when empty gives: " << e << endl;
   }
+  // To test this section, uncomment code and change the input file
+  // in StoreSimulator from "arrival.txt" to "testData.txt"
   // cout << "In test data 10 identical customers enter at same time and all go in one line" << endl;
   // StoreSimulator s;
   // 1.5 min to pay, .1 min per item.
