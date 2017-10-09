@@ -53,7 +53,7 @@ public:
   // O(1) always popping off head if it exists
   Customer dequeue() {
     if (!numberOfCustomers)
-      throw("QueueEmptyException");
+      throw("EmptyQueueException");
 
     Node *tmp = front;
     Customer c = front->value;

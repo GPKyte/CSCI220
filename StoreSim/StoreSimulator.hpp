@@ -122,12 +122,23 @@ public:
     }
   }
   void endSimulation() {
-    double avgWait = 0;
+    double avgWait = 0.0;
+    int complaints = 0;
+    int waitingCustomers = 0;
     for(int i = 0; i < waitTimes.size(); i++) {
       avgWait += waitTimes[i];
+      if (waitTimes[i] > 0)
+        waitingCustomers++;
+      if (waitTimes[i] > 2.0)
+        complaints++;
     }
-    avgWait /= waitTimes.size();
-    cout << "Avg wait: " << avgWait << " minutes" << endl;
+    if (complaints > 0)
+      cout << complaints << " customers complained about waiting too long" << endl;
+    double totalAvgWait = avgWait / waitTimes.size();
+    if (waitingCustomers > 0)
+      avgWait /= waitingCustomers;
+    cout << "Avg wait: " << totalAvgWait << " minutes" << endl;
+    cout << "Avg wait of customers that waited: " << avgWait << " minutes" << endl;
 
     cout << "Max line for each register: " << '[' << registers[0].maxLineLength;
     int maxLineLength = registers[0].maxLineLength;
