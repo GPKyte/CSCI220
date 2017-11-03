@@ -42,4 +42,14 @@ public:
     tree.display(tree.root, 1);
     cout<<endl;
   }
+  void showNeededNotTaken() {
+    tree.showBNotA(tree.root);
+  }
+  void showTakenNotNeeded() {
+    tree.showANotB(tree.root);
+  }
+  void showTakenAndNeeded() {
+    tree.showAAndB(tree.root);
+  }
+
 };

@@ -6,7 +6,7 @@
 using namespace std;
 
 template <class T> class ComparisonTree {
-private:
+public:
   struct Node {
     Node* parent;
     Node* left;
@@ -26,12 +26,14 @@ private:
       typeCounter[1] = 0;
     }
   };
-
-public:
   Node* root;
+  int size;
   ComparisonTree() {
     root = nullptr;
+    size = 0;
   }
+
+  // Takes value and type number for future comparison
   void insert(T value, int type) {
     if(!root) {
       root = new Node(value, nullptr);
@@ -46,11 +48,12 @@ public:
         nomad = nomad->right;
       } else if(value > nomad->value && !nomad->right){
         nomad->right = new Node(value, nomad);
-      } else if(value == nomad->value) {
+      } else if(value == nomad->value) { // Always last case
         nomad->typeCounter[type]++;
         break;
       }
     }
+    size++;
   }
 
   /**
@@ -68,5 +71,33 @@ public:
       cout<<ptr->value<<"("<<ptr->typeCounter[0]<<","<<ptr->typeCounter[1]<<")";
       display(ptr->left, level + 1);
     }
+  }
+
+  void showANotB(Node* parent) {
+    if(!parent)
+      return;
+    if(parent->left) showANotB(parent->left);
+    for (int count = parent->typeCounter[0] - parent->typeCounter[1]; count > 0; count--) {
+      cout<<parent->value<<endl;
+    }
+    if(parent->right) showANotB(parent->right);
+  }
+  void showBNotA(Node* parent) {
+    if(!parent)
+      return;
+    if(parent->left) showBNotA(parent->left);
+    for (int count = parent->typeCounter[1] - parent->typeCounter[0]; count > 0; count--) {
+      cout<<parent->value<<endl;
+    }
+    if(parent->right) showBNotA(parent->right);
+  }
+  void showAAndB(Node* parent) {
+    if(!parent)
+      return;
+    if(parent->left) showAAndB(parent->left);
+    for (int count = 0; count < parent->typeCounter[0] && count < parent->typeCounter[1]; count++) {
+      cout<<parent->value<<endl;
+    }
+    if(parent->right) showAAndB(parent->right);
   }
 };
