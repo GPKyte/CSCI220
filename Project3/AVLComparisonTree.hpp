@@ -19,7 +19,7 @@ public:
     Node* sibling() {
       Node* sib = nullptr;
       if(this->parent) {
-        if(this->parent->value < this->value) {
+        if(this->parent->value >= this->value) {
           sib = this->parent->right;
         } else {
           sib = this->parent->left;
@@ -32,7 +32,7 @@ public:
       this->parent = parent;
       left = nullptr;
       right = nullptr;
-      height = 0;
+      height = 1;
       typeCounter[0] = 0;
       typeCounter[1] = 0;
     }
@@ -65,34 +65,47 @@ public:
       }
     }
     while(nomad->parent) {
-      nomad->height++;
-      Node* sibling = nomad->sibling();
+      nomad = nomad->parent;
       // balance calculated after nomad height is increased,
       // and the initial difference can't be more than 1,
       // thus the nomad is always +0, +1, or +2 relative to sibling
-      int balance = diff(nomad, sibling);
+      int balance = diff(nomad->left, nomad->right);
+      cout << "balance on "<<nomad->value<<": "<< balance << endl;
       if(balance == 0) { // No change in parent's height factor
         break;
       } else if(balance == 1) { // Change parent's height
-        nomad = nomad->parent;
+        nomad->height++;
+        continue;
       } else { // balance == 2
-        rotate(nomad->parent);
+        rotate(nomad);
       }
     }
     size++;
   }
 
+  // Handle nullptr exception for height calc
+  int height(Node* n) {
+    int heightValue = 0;
+    if(n)
+      heightValue = n->height;
+    return heightValue;
+  }
+
+
   /**
-   * Help method to calculate absolute value of height difference
+   * Helper method to calculate absolute value of height difference
    * requires child to be non-null Node ptr, but sibling can be null
    * returns +value which is likely 0, 1, or 2 if used correctly.
    */
   int diff(Node* child, Node* sibling) {
-    int cHeight = child->height;
+    int cHeight = 0;
+    if(child)
+      cHeight = child->height;
+
     int sHeight = 0;
-    if(sibling) {
+    if(sibling)
       sHeight = sibling->height;
-    }
+
     int difference = cHeight - sHeight;
     if(difference < 0) { // Is this ever going to happen?
       difference = -1 * difference;
@@ -102,19 +115,28 @@ public:
 
   void rotate(Node* parent) {
     // Determine rotation type
+    cout<<"calling rotation"<<endl;
     Node* child;
-    if(parent->left->height > parent->right->height) {
+    if(!parent) throw(1);
+    if(height(parent->left) > height(parent->right)) {
       child = parent->left;
-      if(child->left->height > child->right->height)
-        llRotation(parent);
+      if(height(child->left) > height(child->right))
+        {cout<<"calling ll"<<endl;
+        llRotation(parent);}
       else
-        lrRotation(parent);
+        {cout<<"calling lr"<<endl;
+        lrRotation(parent);}
     } else {
       child = parent->right;
-      if(child->left->height > child->right->height)
-        rlRotation(parent);
+      if(height(child->left) > height(child->right))
+        {cout<<"calling rl"<<endl;
+        rlRotation(parent);}
       else
-        rrRotation(parent);
+        {cout<<"calling rr"<<endl;
+        Node* result = rrRotation(parent);
+        if(parent == root){
+          root = result;
+        }}
     }
   }
 
@@ -124,9 +146,9 @@ public:
     parent->parent = tmp;
     parent->left = tmp->right;
     tmp->right = parent;
-    if(tmp->value < tmp->parent->value) {
+    if(tmp->parent && tmp->value < tmp->parent->value) {
       tmp->parent->left = tmp;
-    } else {
+    } else if(tmp->parent) {
       tmp->parent->right = tmp;
     }
     parent->height--;
@@ -139,18 +161,21 @@ public:
     llRotation(parent->right);
     rrRotation(parent);
   }
-  void rrRotation(Node* parent) {
-    Node* tmp = parent->right;
-    tmp->parent = parent->parent;
-    parent->parent = tmp;
-    parent->right = tmp->left;
-    tmp->left = parent;
-    if(tmp->value < tmp->parent->value) {
-      tmp->parent->left = tmp;
-    } else {
-      tmp->parent->right = tmp;
+  Node* rrRotation(Node* A) {
+    Node* B = A->right;
+    B->parent = A->parent;
+    if(B->parent && B->value < B->parent->value) {
+      B->parent->left = B;
+    } else if(B->parent) {
+      B->parent->right = B;
     }
-    parent->height--;
+    A->right = B->left;
+    if(A->right)
+      A->right->parent = A;
+    B->left = A;
+    A->parent = B;
+    A->height--;
+    return B;
   }
 
   /**
