@@ -68,7 +68,7 @@ public:
       cout<<"Root -> ";
       for (i = 0; i < level && ptr != root; i++)
       cout<<"        ";
-      cout<<ptr->value<<"("<<ptr->typeCounter[0]<<","<<ptr->typeCounter[1]<<")";
+      cout<<ptr->value<<"("<<ptr->typeCounter[0]<<","<<ptr->typeCounter[1]<<")-h:"<<ptr->height;
       display(ptr->left, level + 1);
     }
   }

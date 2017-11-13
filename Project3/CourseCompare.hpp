@@ -5,17 +5,18 @@
 #include <iomanip>
 #include <fstream>
 #include "ComparisonTree.hpp"
+#include "AVLComparisonTree.hpp"
 using namespace std;
 
 enum itemType {TAKEN, NEEDED};
 
 class CourseCompare {
 private:
-  ComparisonTree<string> tree;
+  AVLComparisonTree<string> tree;
 
 public:
   CourseCompare() {
-    ComparisonTree<string> tree;
+    AVLComparisonTree<string> tree;
   }
   void loadCourses(string file1, string file2) {
     ifstream myFirstFile(file1);
@@ -51,5 +52,4 @@ public:
   void showTakenAndNeeded() {
     tree.showAAndB(tree.root);
   }
-
 };
