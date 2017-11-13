@@ -5,7 +5,7 @@
 #include <iomanip>
 using namespace std;
 
-template <class T> class ComparisonTree {
+template <class T> class AVLComparisonTree {
 public:
   struct Node {
     Node* parent;
@@ -16,6 +16,17 @@ public:
     static const int numTypes = 2;
     int typeCounter[2];
 
+    Node* sibling() {
+      Node* sib = nullptr;
+      if(this->parent) {
+        if(this->parent->value < this->value) {
+          sib = this->parent->right;
+        } else {
+          sib = this->parent->left;
+        }
+      }
+      return sib;
+    }
     Node(T value, Node* parent) {
       this->value = value;
       this->parent = parent;
@@ -28,7 +39,7 @@ public:
   };
   Node* root;
   int size;
-  ComparisonTree() {
+  AVLComparisonTree() {
     root = nullptr;
     size = 0;
   }
@@ -66,7 +77,6 @@ public:
         nomad = nomad->parent;
       } else { // balance == 2
         rotate(nomad->parent);
-        break;
       }
     }
     size++;
@@ -92,8 +102,6 @@ public:
 
   void rotate(Node* parent) {
     // Determine rotation type
-    int lHeight = parent->left->height;
-    int rHeight = parent->right->height;
     Node* child;
     if(parent->left->height > parent->right->height) {
       child = parent->left;
@@ -113,24 +121,37 @@ public:
   void llRotation(Node* parent) {
     Node* tmp = parent->left;
     tmp->parent = parent->parent;
+    parent->parent = tmp;
     parent->left = tmp->right;
     tmp->right = parent;
+    if(tmp->value < tmp->parent->value) {
+      tmp->parent->left = tmp;
+    } else {
+      tmp->parent->right = tmp;
+    }
     parent->height--;
   }
   void lrRotation(Node* parent) {
-
+    rrRotation(parent->left);
+    llRotation(parent);
   }
   void rlRotation(Node* parent) {
-
+    llRotation(parent->right);
+    rrRotation(parent);
   }
   void rrRotation(Node* parent) {
     Node* tmp = parent->right;
     tmp->parent = parent->parent;
+    parent->parent = tmp;
     parent->right = tmp->left;
     tmp->left = parent;
+    if(tmp->value < tmp->parent->value) {
+      tmp->parent->left = tmp;
+    } else {
+      tmp->parent->right = tmp;
+    }
     parent->height--;
   }
-
 
   /**
    * Display tree
@@ -144,7 +165,7 @@ public:
       cout<<"Root -> ";
       for (i = 0; i < level && ptr != root; i++)
       cout<<"        ";
-      cout<<ptr->value<<"("<<ptr->typeCounter[0]<<","<<ptr->typeCounter[1]<<")";
+      cout<<ptr->value<<"("<<ptr->typeCounter[0]<<","<<ptr->typeCounter[1]<<")-h:"<<ptr->height;
       display(ptr->left, level + 1);
     }
   }
