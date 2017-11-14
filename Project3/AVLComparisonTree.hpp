@@ -13,7 +13,6 @@ public:
     Node* right;
     T value;
     int height;
-    static const int numTypes = 2;
     int typeCounter[2];
 
     Node* sibling() {
@@ -55,35 +54,31 @@ public:
         nomad = nomad->left;
       } else if(value < nomad->value && !nomad->left){
         nomad->left = new Node(value, nomad);
-        balance(nomad->left);
       } else if(value > nomad->value && nomad->right){
         nomad = nomad->right;
       } else if(value > nomad->value && !nomad->right){
         nomad->right = new Node(value, nomad);
-        balance(nomad->right);
       } else if(value == nomad->value) { // Always last case
         nomad->typeCounter[type]++;
         break;
       }
     }
+    balance(nomad);
     size++;
   }
 
   void balance(Node* nomad) {
-    while(nomad->parent) {
-      nomad = nomad->parent;
-      // balance calculated after nomad height is increased,
-      // and the initial difference can't be more than 1,
-      // thus the nomad is always +0, +1, or +2 relative to sibling
+    while(nomad) {
       int balance = diff(nomad->left, nomad->right);
-      if(balance == 0) { // No change in parent's height factor
-        break;
-      } else if(balance == 1) { // Change parent's height
-        nomad->height++;
-        continue;
+      if(balance == 0) {
+        updateHeight(nomad);
+      } else if(balance == 1) {
+        updateHeight(nomad);
       } else { // balance == 2
         rotate(nomad);
+        break;
       }
+      nomad = nomad->parent;
     }
   }
 
@@ -95,6 +90,15 @@ public:
     return heightValue;
   }
 
+  void updateHeight(Node* parent) {
+    int leftHeight = height(parent->left);
+    int rightHeight = height(parent->right);
+    if(leftHeight >= rightHeight) {
+      parent->height = leftHeight + 1;
+    } else {
+      parent->height = rightHeight + 1;
+    }
+  }
 
   /**
    * Helper method to calculate absolute value of height difference
@@ -156,11 +160,11 @@ public:
     return B;
   }
   Node* lrRotation(Node* parent) {
-    rrRotation(parent->left);
+    rrRotation(parent->left)->height++;
     return llRotation(parent);
   }
   Node* rlRotation(Node* parent) {
-    llRotation(parent->right);
+    llRotation(parent->right)->height++;
     return rrRotation(parent);
   }
   Node* rrRotation(Node* A) {

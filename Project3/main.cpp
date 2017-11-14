@@ -8,8 +8,7 @@ using namespace std;
 
 int main(){
   CourseCompare comp;
-  comp.loadCourses("inOrder.txt", "inOrder.txt");
-  // comp.display();
+  comp.loadCourses("coursesTaken.txt", "coursesNeeded.txt");
   cout<<"Courses still needed:"<<endl;
   comp.showNeededNotTaken();
   cout<<"Courses taken but not needed:"<<endl;
