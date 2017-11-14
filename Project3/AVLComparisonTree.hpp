@@ -55,22 +55,27 @@ public:
         nomad = nomad->left;
       } else if(value < nomad->value && !nomad->left){
         nomad->left = new Node(value, nomad);
+        balance(nomad->left);
       } else if(value > nomad->value && nomad->right){
         nomad = nomad->right;
       } else if(value > nomad->value && !nomad->right){
         nomad->right = new Node(value, nomad);
+        balance(nomad->right);
       } else if(value == nomad->value) { // Always last case
         nomad->typeCounter[type]++;
         break;
       }
     }
+    size++;
+  }
+
+  void balance(Node* nomad) {
     while(nomad->parent) {
       nomad = nomad->parent;
       // balance calculated after nomad height is increased,
       // and the initial difference can't be more than 1,
       // thus the nomad is always +0, +1, or +2 relative to sibling
       int balance = diff(nomad->left, nomad->right);
-      cout << "balance on "<<nomad->value<<": "<< balance << endl;
       if(balance == 0) { // No change in parent's height factor
         break;
       } else if(balance == 1) { // Change parent's height
@@ -80,7 +85,6 @@ public:
         rotate(nomad);
       }
     }
-    size++;
   }
 
   // Handle nullptr exception for height calc
@@ -115,51 +119,49 @@ public:
 
   void rotate(Node* parent) {
     // Determine rotation type
-    cout<<"calling rotation"<<endl;
     Node* child;
+    Node* newParent;
     if(!parent) throw(1);
     if(height(parent->left) > height(parent->right)) {
       child = parent->left;
       if(height(child->left) > height(child->right))
-        {cout<<"calling ll"<<endl;
-        llRotation(parent);}
+        newParent = llRotation(parent);
       else
-        {cout<<"calling lr"<<endl;
-        lrRotation(parent);}
+        newParent = lrRotation(parent);
     } else {
       child = parent->right;
       if(height(child->left) > height(child->right))
-        {cout<<"calling rl"<<endl;
-        rlRotation(parent);}
+        newParent = rlRotation(parent);
       else
-        {cout<<"calling rr"<<endl;
-        Node* result = rrRotation(parent);
-        if(parent == root){
-          root = result;
-        }}
+        newParent = rrRotation(parent);
     }
+    if(parent == root)
+      root = newParent;
   }
 
-  void llRotation(Node* parent) {
-    Node* tmp = parent->left;
-    tmp->parent = parent->parent;
-    parent->parent = tmp;
-    parent->left = tmp->right;
-    tmp->right = parent;
-    if(tmp->parent && tmp->value < tmp->parent->value) {
-      tmp->parent->left = tmp;
-    } else if(tmp->parent) {
-      tmp->parent->right = tmp;
+  Node* llRotation(Node* A) {
+    Node* B = A->left;
+    B->parent = A->parent;
+    if(B->parent && B->value < B->parent->value) {
+      B->parent->left = B;
+    } else if(B->parent) {
+      B->parent->right = B;
     }
-    parent->height--;
+    A->left = B->right;
+    if(A->left)
+      A->left->parent = A;
+    B->right = A;
+    A->parent = B;
+    A->height--;
+    return B;
   }
-  void lrRotation(Node* parent) {
+  Node* lrRotation(Node* parent) {
     rrRotation(parent->left);
-    llRotation(parent);
+    return llRotation(parent);
   }
-  void rlRotation(Node* parent) {
+  Node* rlRotation(Node* parent) {
     llRotation(parent->right);
-    rrRotation(parent);
+    return rrRotation(parent);
   }
   Node* rrRotation(Node* A) {
     Node* B = A->right;
