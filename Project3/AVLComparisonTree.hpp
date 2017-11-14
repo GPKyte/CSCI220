@@ -43,7 +43,11 @@ public:
     size = 0;
   }
 
-  // Takes value and type number for future comparison
+  /**
+   * Take a type-specified value and insert it into tree. All values
+   * represented once, and counted via type.
+   * O(log(n)) where n = #nodes in tree
+   */
   void insert(T value, int type) {
     if(!root) {
       root = new Node(value, nullptr);
@@ -67,6 +71,12 @@ public:
     size++;
   }
 
+  /**
+   * Takes a newly inserted node and iterates up tree until height
+   * is done changing. Rotates as needed for balance.
+   * O(log(n)) worst case
+   * O(1) best case
+   */
   void balance(Node* nomad) {
     while(nomad) {
       int balance = diff(nomad->left, nomad->right);
@@ -82,7 +92,11 @@ public:
     }
   }
 
-  // Handle nullptr exception for height calc
+  /**
+   * Handle nullptr exception for height calc
+   * return 0 if Node doesn't exist
+   * O(1) run time
+   */
   int height(Node* n) {
     int heightValue = 0;
     if(n)
@@ -90,6 +104,10 @@ public:
     return heightValue;
   }
 
+  /**
+   * Height of Node will become that of its tallest child + 1
+   * O(1) run time
+   */
   void updateHeight(Node* parent) {
     int leftHeight = height(parent->left);
     int rightHeight = height(parent->right);
@@ -104,28 +122,31 @@ public:
    * Helper method to calculate absolute value of height difference
    * requires child to be non-null Node ptr, but sibling can be null
    * returns +value which is likely 0, 1, or 2 if used correctly.
+   * O(1) run time
    */
   int diff(Node* child, Node* sibling) {
     int cHeight = 0;
+    int sHeight = 0;
     if(child)
       cHeight = child->height;
-
-    int sHeight = 0;
     if(sibling)
       sHeight = sibling->height;
-
     int difference = cHeight - sHeight;
-    if(difference < 0) { // Is this ever going to happen?
-      difference = -1 * difference;
+    if(difference < 0) {
+      difference *= -1;
     }
     return difference;
   }
 
+  /**
+   * Takes a Node parent, A, such that there exists a B and C
+   * that A -> B -> C as in a RR, LL, RL, or LR path
+   * Runs in O(1) time
+   */
   void rotate(Node* parent) {
-    // Determine rotation type
+    if(!parent) throw(1);
     Node* child;
     Node* newParent;
-    if(!parent) throw(1);
     if(height(parent->left) > height(parent->right)) {
       child = parent->left;
       if(height(child->left) > height(child->right))
@@ -143,6 +164,11 @@ public:
       root = newParent;
   }
 
+  /**
+   * Takes a node and reassigns the pointers related to it's
+   * parent and left child. Returns the new parent of initial node.
+   * O(1) run time
+   */
   Node* llRotation(Node* A) {
     Node* B = A->left;
     B->parent = A->parent;
@@ -159,14 +185,31 @@ public:
     A->height--;
     return B;
   }
+  /**
+   * Takes a node and reassigns the pointers related to it's
+   * parent, left child, and that childs right child.
+   * Returns the new parent of initial node.
+   * O(1) run time
+   */
   Node* lrRotation(Node* parent) {
     rrRotation(parent->left)->height++;
     return llRotation(parent);
   }
+  /**
+   * Takes a node and reassigns the pointers related to it's
+   * parent, right child, and that childs left child.
+   * Returns the new parent of initial node.
+   * O(1) run time
+   */
   Node* rlRotation(Node* parent) {
     llRotation(parent->right)->height++;
     return rrRotation(parent);
   }
+  /**
+   * Takes a node and reassigns the pointers related to it's
+   * parent, right child. Returns the new parent of initial node.
+   * O(1) run time
+   */
   Node* rrRotation(Node* A) {
     Node* B = A->right;
     B->parent = A->parent;
@@ -186,6 +229,9 @@ public:
 
   /**
    * Display tree
+   * This is a recursive, visual traversal that prints from right
+   * to left, with terminal-focused-"up" being tree-"right" and down being left
+   * O(n) always where n = #nodes
    */
   void display(Node *ptr, int level) {
     int i;
@@ -201,6 +247,10 @@ public:
     }
   }
 
+  /**
+   * Print all elements of type A that aren't type B
+   * O(n) always where n = #nodes
+   */
   void showANotB(Node* parent) {
     if(!parent)
       return;
@@ -210,6 +260,10 @@ public:
     }
     if(parent->right) showANotB(parent->right);
   }
+  /**
+   * Print all elements of type b that aren't type A
+   * O(n) always where n = #nodes
+   */
   void showBNotA(Node* parent) {
     if(!parent)
       return;
@@ -219,6 +273,10 @@ public:
     }
     if(parent->right) showBNotA(parent->right);
   }
+  /**
+   * Print all elements of type A that are also type B
+   * O(n) always where n = #nodes
+   */
   void showAAndB(Node* parent) {
     if(!parent)
       return;
