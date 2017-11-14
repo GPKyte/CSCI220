@@ -3,18 +3,13 @@
 
 #include <iostream>
 #include <iomanip>
-#include "CourseCompare.hpp"
+#include "AVLComparisonTree.hpp"
 using namespace std;
 
 int main(){
-  CourseCompare comp;
-  comp.loadCourses("coursesTaken.txt", "coursesNeeded.txt");
-  cout<<"Courses still needed:"<<endl;
-  comp.showNeededNotTaken();
-  cout<<"Courses taken but not needed:"<<endl;
-  comp.showTakenNotNeeded();
-  cout<<"Courses taken that are also necessary:"<<endl;
-  comp.showTakenAndNeeded();
+  AVLComparisonTree<string> comp;
+  comp.loadData("coursesNeeded.txt", "coursesTaken.txt");
+  comp.compareLists();
   comp.display();
   return 0;
 }

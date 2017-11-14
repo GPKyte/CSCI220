@@ -2,11 +2,16 @@
 // Thu Nov  2 16:08:49 2017
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 using namespace std;
 
+enum itemType {TAKEN, NEEDED};
+
 template <class T> class AVLComparisonTree {
-public:
+private:
+  string file1;
+  string file2;
   struct Node {
     Node* parent;
     Node* left;
@@ -36,41 +41,6 @@ public:
       typeCounter[1] = 0;
     }
   };
-  Node* root;
-  int size;
-  AVLComparisonTree() {
-    root = nullptr;
-    size = 0;
-  }
-
-  /**
-   * Take a type-specified value and insert it into tree. All values
-   * represented once, and counted via type.
-   * O(log(n)) where n = #nodes in tree
-   */
-  void insert(T value, int type) {
-    if(!root) {
-      root = new Node(value, nullptr);
-    }
-    Node* nomad = root;
-    while(1) {
-      if(value < nomad->value && nomad->left){
-        nomad = nomad->left;
-      } else if(value < nomad->value && !nomad->left){
-        nomad->left = new Node(value, nomad);
-      } else if(value > nomad->value && nomad->right){
-        nomad = nomad->right;
-      } else if(value > nomad->value && !nomad->right){
-        nomad->right = new Node(value, nomad);
-      } else if(value == nomad->value) { // Always last case
-        nomad->typeCounter[type]++;
-        break;
-      }
-    }
-    balance(nomad);
-    size++;
-  }
-
   /**
    * Takes a newly inserted node and iterates up tree until height
    * is done changing. Rotates as needed for balance.
@@ -91,7 +61,6 @@ public:
       nomad = nomad->parent;
     }
   }
-
   /**
    * Handle nullptr exception for height calc
    * return 0 if Node doesn't exist
@@ -103,7 +72,6 @@ public:
       heightValue = n->height;
     return heightValue;
   }
-
   /**
    * Height of Node will become that of its tallest child + 1
    * O(1) run time
@@ -117,7 +85,6 @@ public:
       parent->height = rightHeight + 1;
     }
   }
-
   /**
    * Helper method to calculate absolute value of height difference
    * requires child to be non-null Node ptr, but sibling can be null
@@ -137,7 +104,6 @@ public:
     }
     return difference;
   }
-
   /**
    * Takes a Node parent, A, such that there exists a B and C
    * that A -> B -> C as in a RR, LL, RL, or LR path
@@ -163,7 +129,6 @@ public:
     if(parent == root)
       root = newParent;
   }
-
   /**
    * Takes a node and reassigns the pointers related to it's
    * parent and left child. Returns the new parent of initial node.
@@ -226,7 +191,6 @@ public:
     A->height--;
     return B;
   }
-
   /**
    * Display tree
    * This is a recursive, visual traversal that prints from right
@@ -246,7 +210,6 @@ public:
       display(ptr->left, level + 1);
     }
   }
-
   /**
    * Print all elements of type A that aren't type B
    * O(n) always where n = #nodes
@@ -285,5 +248,86 @@ public:
       cout<<parent->value<<endl;
     }
     if(parent->right) showAAndB(parent->right);
+  }
+
+public:
+  Node* root;
+  int size;
+  AVLComparisonTree() {
+    root = nullptr;
+    size = 0;
+    file1 = "file1";
+    file2 = "file2";
+  }
+  void loadData(string file1, string file2) {
+    this->file1 = file1;
+    this->file2 = file2;
+    ifstream myFirstFile(file1);
+    ifstream mySecondFile(file2);
+    if(myFirstFile.is_open() && mySecondFile.is_open()) {
+      string course;
+      while(getline(myFirstFile, course)) {
+        insert(course, TAKEN);
+      }
+      myFirstFile.clear();
+      myFirstFile.seekg(0, myFirstFile.beg);
+      myFirstFile.close();
+      while(getline(mySecondFile, course)) {
+        insert(course, NEEDED);
+      }
+      mySecondFile.clear();
+      mySecondFile.seekg(0, mySecondFile.beg);
+      mySecondFile.close();
+    }else
+    throw(1);
+  }
+  /**
+   * Take a type-specified value and insert it into tree. All values
+   * represented once, and counted via type.
+   * O(log(n)) where n = #nodes in tree
+   */
+  void insert(T value, int type) {
+    if(!root) {
+      root = new Node(value, nullptr);
+    }
+    Node* nomad = root;
+    while(1) {
+      if(value < nomad->value && nomad->left){
+        nomad = nomad->left;
+      } else if(value < nomad->value && !nomad->left){
+        nomad->left = new Node(value, nomad);
+      } else if(value > nomad->value && nomad->right){
+        nomad = nomad->right;
+      } else if(value > nomad->value && !nomad->right){
+        nomad->right = new Node(value, nomad);
+      } else if(value == nomad->value) { // Always last case
+        nomad->typeCounter[type]++;
+        break;
+      }
+    }
+    balance(nomad);
+    size++;
+  }
+  /**
+   * Decoupled display method to start other display method
+   */
+  void display() {
+    display(root, 1);
+    cout<<endl;
+  }
+  /**
+   * Decoupled group comparison method for all three comparisons
+   */
+  void compareLists() {
+    if(!root) {
+      cout<<"No data inserted yet."<<endl;
+      return;
+    }
+    cout<<"Objects from only "<<file1<<":"<<endl;
+    showANotB(root);
+    cout<<"Objects from only "<<file2<<":"<<endl;
+    showBNotA(root);
+    cout<<"Objects in both files:"<<endl;
+    showAAndB(root);
   }
 };
