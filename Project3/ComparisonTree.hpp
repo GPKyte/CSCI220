@@ -3,9 +3,14 @@
 
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 using namespace std;
 
 template <class T> class ComparisonTree {
+private:
+  string file1;
+  string file2;
+
 public:
   struct Node {
     Node* parent;
@@ -13,7 +18,6 @@ public:
     Node* right;
     T value;
     int height;
-    static const int numTypes = 2;
     int typeCounter[2];
 
     Node(T value, Node* parent) {
@@ -31,6 +35,29 @@ public:
   ComparisonTree() {
     root = nullptr;
     size = 0;
+  }
+
+  void loadData(string file1, string file2) {
+    this->file1 = file1;
+    this->file2 = file2;
+    ifstream myFirstFile(file1);
+    ifstream mySecondFile(file2);
+    if(myFirstFile.is_open() && mySecondFile.is_open()) {
+      string line;
+      while(getline(myFirstFile, line)) {
+        insert(line, 0);
+      }
+      myFirstFile.clear();
+      myFirstFile.seekg(0, myFirstFile.beg);
+      myFirstFile.close();
+      while(getline(mySecondFile, line)) {
+        insert(line, 1);
+      }
+      mySecondFile.clear();
+      mySecondFile.seekg(0, mySecondFile.beg);
+      mySecondFile.close();
+    } else
+      throw(1);
   }
 
   // Takes value and type number for future comparison
@@ -73,6 +100,21 @@ public:
     }
   }
 
+  /**
+   * Decoupled group comparison method for all three comparisons
+   */
+  void compareLists() {
+    if(!root) {
+      cout<<"No data inserted yet."<<endl;
+      return;
+    }
+    cout<<"Objects from only "<<file1<<":"<<endl;
+    showANotB(root);
+    cout<<"Objects from only "<<file2<<":"<<endl;
+    showBNotA(root);
+    cout<<"Objects in both files:"<<endl;
+    showAAndB(root);
+  }
   void showANotB(Node* parent) {
     if(!parent)
       return;

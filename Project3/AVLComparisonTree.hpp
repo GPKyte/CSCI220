@@ -6,7 +6,7 @@
 #include <iomanip>
 using namespace std;
 
-enum itemType {TAKEN, NEEDED};
+enum itemType {FIRST, SECOND};
 
 template <class T> class AVLComparisonTree {
 private:
@@ -259,27 +259,32 @@ public:
     file1 = "file1";
     file2 = "file2";
   }
+  /**
+   * Takes two file paths as input, permissions must allow reading of file
+   * Files read by line only, not by space and new line
+   * O(nlog(n)) operation to insert every value in both files
+   */
   void loadData(string file1, string file2) {
     this->file1 = file1;
     this->file2 = file2;
     ifstream myFirstFile(file1);
     ifstream mySecondFile(file2);
     if(myFirstFile.is_open() && mySecondFile.is_open()) {
-      string course;
-      while(getline(myFirstFile, course)) {
-        insert(course, TAKEN);
+      string line;
+      while(getline(myFirstFile, line)) {
+        insert(line, FIRST);
       }
       myFirstFile.clear();
       myFirstFile.seekg(0, myFirstFile.beg);
       myFirstFile.close();
-      while(getline(mySecondFile, course)) {
-        insert(course, NEEDED);
+      while(getline(mySecondFile, line)) {
+        insert(line, SECOND);
       }
       mySecondFile.clear();
       mySecondFile.seekg(0, mySecondFile.beg);
       mySecondFile.close();
-    }else
-    throw(1);
+    } else
+      throw(1);
   }
   /**
    * Take a type-specified value and insert it into tree. All values
