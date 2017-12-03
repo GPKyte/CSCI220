@@ -34,17 +34,14 @@ public:
 	// A possibly better way to keep track of tombstones and emtpy
 	// records would be to use inheritance, similar to the way we
 	// avoided having null pointers in leaf nodes for binary trees.
-	Record()
-	{
+	Record() {
 		key = 0;
 		type = emptyRecord;
 	}
 
 	// This constructor uses an initialization list
 	// See "member initialization" at: http://www.cplusplus.com/doc/tutorial/classes/
-	Record(int newkey, T newvalue)
-		: key(newkey), value(newvalue)
-	{
+	Record(int newkey, T newvalue) : key(newkey), value(newvalue) {
 		type = normalRecord;
 	}
 

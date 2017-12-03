@@ -5,7 +5,7 @@ template <class T> class HashTable
 {
 private:
   Record<T> *hashMap;
-    int currentSize;
+  int currentSize;
 	//friend function for << operator.
 	friend ostream& operator<<(ostream& os, const HashTable& me) {
 		//ADD CODE HERE
