@@ -21,7 +21,7 @@ public:
   float alpha();
   bool remove(int key);
   unsigned hashFunction(int key);
-  unsigned probeFunction(int key);
-  unsigned probeFunction(int key, int count);
+  // unsigned probeFunction(int key);
+  unsigned probeFunction(int key, int hash);
   ~HashTable();
 };

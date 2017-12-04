@@ -1,6 +1,7 @@
 #include "HashTable.h"
 #include "Record.h"
 #include <string>
+#include <stdio.h>
 
 /*Generic constructor*/
 template <class T> HashTable<T>::HashTable() {
@@ -20,19 +21,23 @@ template <class T> bool HashTable<T>::find(int key, T& value) {
  * for analysis
  */
 template <class T> bool HashTable<T>::insert(int key, T value, int& collisions) {
-  int local = hashFunction(key);
-  for(;;) {
+  unsigned int local = hashFunction(key);
+  int count = 0;
+  while (count != MAXHASH) {
     Record<T> probe = hashMap[local];
-    if (probe.isEmpty() || probe.isTombstone() || probe.getKey() == key) {
+    if (!probe.isNormal()) {
       hashMap[local] = Record<T>(key, value);
-      // delete probe;
+      currentSize++;
       return true;
-    } else if (probe.isNormal() && probe.getKey() != key) {
-      local = (local + probeFunction(key)) % MAXHASH;
+    } else if (probe.getKey() == key) {
+      hashMap[local] = Record<T>(key, value);
+      return true;
     } else {
-      throw(1);
+      local = probeFunction(key, local);
+      collisions++; count++;
     }
   }
+  cout<<"MAXHASH Exceeded on insert key: "<<key<<", "<<value<<", "<<local<<endl;
   return false;
 }
 
@@ -51,7 +56,7 @@ template <class T> bool HashTable<T>::remove(int key) {
       hashMap[local].kill();
       return true;
     } else {
-      local = (local+probeFunction(key)) % MAXHASH;
+      local = probeFunction(key, local);
     }
     count++;
   }
@@ -78,15 +83,90 @@ unsigned oat_hash(int *key, int len) {
     return h;
 }
 
-/*Hash function for finding the home position*/
-template <class T> int HashTable<T>::hashFunction(int key) {
-  return oat_hash(&key, sizeof(key)) % MAXHASH;
+#define hashsize(n) (1U << (n))
+#define hashmask(n) (hashsize(n) - 1)
+
+#define mix(a,b,c) \
+{ \
+    a -= b; a -= c; a ^= (c >> 13); \
+    b -= c; b -= a; b ^= (a << 8); \
+    c -= a; c -= b; c ^= (b >> 13); \
+    a -= b; a -= c; a ^= (c >> 12); \
+    b -= c; b -= a; b ^= (a << 16); \
+    c -= a; c -= b; c ^= (b >> 5); \
+    a -= b; a -= c; a ^= (c >> 3); \
+    b -= c; b -= a; b ^= (a << 10); \
+    c -= a; c -= b; c ^= (b >> 15); \
 }
 
-/*The result of probing is returned with the new slot's position*/
-template <class T> int HashTable<T>::probeFunction(int key) {
-  return (key*key + 1) % MAXHASH;
+unsigned jen_hash(unsigned char *k, unsigned length, unsigned initval)
+{
+    unsigned a, b;
+    unsigned c = initval;
+    unsigned len = length;
+
+    a = b = 0x9e3779b9;
+
+    while (len >= 12)
+    {
+        a += (k[0] + ((unsigned)k[1] << 8) + ((unsigned)k[2] << 16) + ((unsigned)k[3] << 24));
+        b += (k[4] + ((unsigned)k[5] << 8) + ((unsigned)k[6] << 16) + ((unsigned)k[7] << 24));
+        c += (k[8] + ((unsigned)k[9] << 8) + ((unsigned)k[10] << 16) + ((unsigned)k[11] << 24));
+
+        mix(a, b, c);
+
+        k += 12;
+        len -= 12;
+    }
+
+    c += length;
+
+    switch (len)
+    {
+    case 11: c += ((unsigned)k[10] << 24);
+    case 10: c += ((unsigned)k[9] << 16);
+    case 9: c += ((unsigned)k[8] << 8);
+        /* First byte of c reserved for length */
+    case 8: b += ((unsigned)k[7] << 24);
+    case 7: b += ((unsigned)k[6] << 16);
+    case 6: b += ((unsigned)k[5] << 8);
+    case 5: b += k[4];
+    case 4: a += ((unsigned)k[3] << 24);
+    case 3: a += ((unsigned)k[2] << 16);
+    case 2: a += ((unsigned)k[1] << 8);
+    case 1: a += k[0];
+    }
+
+    mix(a, b, c);
+
+    return c;
 }
+
+unsigned simple_hash(int *key, int len) {
+  return (*(key) * len + 1);
+}
+
+/*Hash function for finding the home position*/
+template <class T> unsigned HashTable<T>::hashFunction(int key) {
+  int hashChoice = 2;
+  unsigned hash;
+  if (hashChoice == 0)
+    hash = simple_hash(&key, sizeof(key));
+  else if (hashChoice == 1)
+    hash = oat_hash(&key, sizeof(key));
+  else if (hashChoice == 2)
+    hash = jen_hash((unsigned char*)&key, sizeof(key), 1);
+  return hash % MAXHASH;
+}
+
+/*Returns the offset to probe by*/
+template <class T> unsigned HashTable<T>::probeFunction(int key, int hash) {
+  return (hash + 3) % MAXHASH;
+}
+
+// template <class T> unsigned HashTable<T>::probeFunction(int key, int hash) {
+//   return (hash + oat_hash(&key, sizeof(key))) % MAXHASH;
+// }
 
 /*Deallocater*/
 template <class T> HashTable<T>::~HashTable() {
