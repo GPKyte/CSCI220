@@ -37,7 +37,7 @@ template <class T> bool HashTable<T>::insert(int key, T value, int& collisions) 
       collisions++; count++;
     }
   }
-  cout<<"MAXHASH Exceeded on insert key: "<<key<<", "<<value<<", "<<local<<endl;
+  throw(1); // Mathematically impossible if MAXHASH is prime, practically possible via program error.
   return false;
 }
 
@@ -146,22 +146,27 @@ unsigned simple_hash(int *key, int len) {
   return (*(key) * len + 1);
 }
 
-/*Hash function for finding the home position*/
-template <class T> unsigned HashTable<T>::hashFunction(int key) {
-  int hashChoice = 2;
+unsigned chooseHash(int key, int choice) {
   unsigned hash;
-  if (hashChoice == 0)
+  if (choice == 0)
     hash = simple_hash(&key, sizeof(key));
-  else if (hashChoice == 1)
+  else if (choice == 1)
     hash = oat_hash(&key, sizeof(key));
-  else if (hashChoice == 2)
+  else if (choice == 2)
     hash = jen_hash((unsigned char*)&key, sizeof(key), 1);
   return hash % MAXHASH;
 }
 
+/*Hash function for finding the home position*/
+template <class T> unsigned HashTable<T>::hashFunction(int key) {
+  return chooseHash(key, 2);
+}
+
 /*Returns the offset to probe by*/
 template <class T> unsigned HashTable<T>::probeFunction(int key, int hash) {
-  return (hash + 3) % MAXHASH;
+  int probe = (hash + chooseHash(key, 1)) % MAXHASH;
+  if (probe == hash) probe += 5;
+  return probe;
 }
 
 // template <class T> unsigned HashTable<T>::probeFunction(int key, int hash) {
