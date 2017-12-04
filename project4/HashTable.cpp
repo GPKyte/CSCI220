@@ -14,9 +14,25 @@ template <class T> bool HashTable<T>::find(int key, T& value) {
   return false;
 }
 
-/*Inserts the key/value into the hashtable and stores the amount of collisions in the passed collisions*/
+/**
+ * Inserts the key/value into the hashtable and
+ * stores the amount of collisions in an outside memory location
+ * for analysis
+ */
 template <class T> bool HashTable<T>::insert(int key, T value, int& collisions) {
-
+  int local = hashFunction(key);
+  for(;;) {
+    Record<T> probe = hashMap[local];
+    if (probe.isEmpty() || probe.isTombstone() || probe.getKey() == key) {
+      hashMap[local] = Record<T>(key, value);
+      // delete probe;
+      return true;
+    } else if (probe.isNormal() && probe.getKey() != key) {
+      local = (local + probeFunction(key)) % MAXHASH;
+    } else {
+      throw(1);
+    }
+  }
   return false;
 }
 
@@ -35,21 +51,41 @@ template <class T> bool HashTable<T>::remove(int key) {
       hashMap[local].kill();
       return true;
     } else {
-      local = probeFunction(local);
+      local = (local+probeFunction(key)) % MAXHASH;
     }
     count++;
   }
   return false;
 }
 
+/*Taken and modified from http://www.eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx */
+unsigned oat_hash(int *key, int len) {
+    unsigned char *p = (unsigned char*)(key);
+    unsigned h = 0;
+    int i;
+
+    for (i = 0; i < len; i++)
+    {
+        h += p[i];
+        h += (h << 10);
+        h ^= (h >> 6);
+    }
+
+    h += (h << 3);
+    h ^= (h >> 11);
+    h += (h << 15);
+
+    return h;
+}
+
 /*Hash function for finding the home position*/
 template <class T> int HashTable<T>::hashFunction(int key) {
-  return 0;
+  return oat_hash(&key, sizeof(key)) % MAXHASH;
 }
 
 /*The result of probing is returned with the new slot's position*/
 template <class T> int HashTable<T>::probeFunction(int key) {
-  return 0;
+  return (key*key + 1) % MAXHASH;
 }
 
 /*Deallocater*/

@@ -8,7 +8,9 @@ private:
   int currentSize;
 	//friend function for << operator.
 	friend ostream& operator<<(ostream& os, const HashTable& me) {
-		//ADD CODE HERE
+		for (int i = 0; i < MAXHASH; i++) {
+      cout<<me.hashMap[i]<<endl;
+    }
 		return os;
 	}
 

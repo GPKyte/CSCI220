@@ -10,6 +10,11 @@ int main()
 {
 	/* initialize random seed: */
 	srand((unsigned int)time(0));
-	
+	int collisions = 0;
+	HashTable<int> table;
+	for (int i=0; i<100; i++) {
+		table.insert(i, rand(), collisions);
+	}
+	cout << table << endl;
 	return 0;
 }
