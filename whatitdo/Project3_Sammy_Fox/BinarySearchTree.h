@@ -149,6 +149,8 @@ public:
         }
       }
     }
+    throw(1);
+    return " ";
   }
   // perameter: Node
   // return: string
@@ -235,6 +237,7 @@ public:
       delete(toCompare);
       return s;
     }
+    return " ";
   }
   // perameter: None
   // Return: void
@@ -248,9 +251,9 @@ public:
     inOrderPrint(current);
     cout << endl;
   }
-  // perameter: Node
+  // perameter: Node // Root node?
   // Return: None
-  // this function helps print out the tree inorder
+  // this function helps print out the tree inorder // alphabetical order?
   // big theta of n
   void inOrderPrint(Node *current)
   {

@@ -1,6 +1,6 @@
 #include "ComparingLists.cpp"
 #include <string>
-// perameter: none
+// perameter: none // mispelled parameter
 // return: int
 // this is the main of the program and runs everything
 // big theta of nlog(n)
