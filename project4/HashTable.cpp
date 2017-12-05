@@ -40,13 +40,14 @@ template <class T> bool HashTable<T>::insert(int key, T value, int& collisions) 
     if (!probe.isNormal()) {
       hashMap[local] = Record<T>(key, value);
       currentSize++;
+      collisions += count;
       return true;
     } else if (probe.getKey() == key) {
       hashMap[local] = Record<T>(key, value);
       return true;
     } else {
       local = probeFunction(key, local);
-      collisions++; count++;
+      count++;
     }
   }
   throw(1); // Mathematically impossible if MAXHASH is prime, practically possible via program error.
