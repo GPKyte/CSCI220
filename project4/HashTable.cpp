@@ -11,7 +11,19 @@ template <class T> HashTable<T>::HashTable() {
 
 /*Finds an element with a certain key and stores it in the value passed*/
 template <class T> bool HashTable<T>::find(int key, T& value) {
+  int local = hashFunction(key);
+  int count = 0;
 
+  // Since MAXHASH is prime, all values 0-MAXHASH will be covered eventually
+  while (count != MAXHASH) {
+    if (hashMap[local].isNormal() && hashMap[local].getKey() == key) {
+      value = hashMap[local].getValue();
+      return true;
+    } else {
+      local = probeFunction(key, local);
+    }
+    count++;
+  }
   return false;
 }
 
@@ -43,7 +55,7 @@ template <class T> bool HashTable<T>::insert(int key, T value, int& collisions) 
 
 /*Returns the load factor for the hash*/
 template <class T> float HashTable<T>::alpha() {
-  return currentSize / MAXHASH;
+  return (float)currentSize/MAXHASH;
 }
 
 /*Kills a table key*/
@@ -51,6 +63,7 @@ template <class T> bool HashTable<T>::remove(int key) {
   int local = hashFunction(key);
   int count = 0;
 
+  // Since MAXHASH is prime, all values 0-MAXHASH will be covered eventually
   while (count != MAXHASH) {
     if (hashMap[local].isNormal() && hashMap[local].getKey() == key) {
       hashMap[local].kill();
