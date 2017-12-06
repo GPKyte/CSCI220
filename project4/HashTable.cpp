@@ -4,13 +4,13 @@
 #include <stdio.h>
 
 /*Generic constructor*/
-template <class T> HashTable<T>::HashTable() {
-  hashMap = new Record<T>[MAXHASH];
+template <class K, class V> HashTable<K, V>::HashTable() {
+  hashMap = new Record<K, V>[MAXHASH];
   currentSize = 0;
 }
 
 /*Finds an element with a certain key and stores it in the value passed*/
-template <class T> bool HashTable<T>::find(int key, T& value) {
+template <class K, class V> bool HashTable<K, V>::find(K key, V& value) {
   int local = hashFunction(key);
   int count = 0;
 
@@ -30,39 +30,41 @@ template <class T> bool HashTable<T>::find(int key, T& value) {
 /**
  * Inserts the key/value into the hashtable and stores the amount
  * of collisions in an outside memory location for analysis
- * @param int key, A unique identifier
- * @param T value, A value of the accepted type T, no restrictions beyond type
+ * @param K key, A unique identifier
+ * @param V value, A value of the accepted type T, no restrictions beyond type
  * @param int& collisions, Reference to outside variable to track collision history
  */
-template <class T> bool HashTable<T>::insert(int key, T value, int& collisions) {
+template <class K, class V> bool HashTable<K, V>::insert(K key, V value, int& collisions) {
   unsigned int local = hashFunction(key);
   int count = 0;
   while (count != MAXHASH) {
-    Record<T> probe = hashMap[local];
+    Record<K, V> probe = hashMap[local];
     if (!probe.isNormal()) {
-      hashMap[local] = Record<T>(key, value);
+      hashMap[local] = Record<K, V>(key, value);
       currentSize++;
       collisions += count;
       return true;
     } else if (probe.getKey() == key) {
-      hashMap[local] = Record<T>(key, value);
+      hashMap[local] = Record<K, V>(key, value);
       return true;
     } else {
       local = probeFunction(key, local);
       count++;
     }
+    if (count > MAXHASH/2) std::cout << local << std::endl;
   }
+  std::cout<<local<<std::endl;
   throw(1); // Mathematically impossible if MAXHASH is prime, practically possible via program error.
   return false;
 }
 
 /*Returns the load factor for the hash*/
-template <class T> float HashTable<T>::alpha() {
+template <class K, class V> float HashTable<K, V>::alpha() {
   return (float)currentSize/MAXHASH;
 }
 
 /*Kills a table key*/
-template <class T> bool HashTable<T>::remove(int key) {
+template <class K, class V> bool HashTable<K, V>::remove(K key) {
   int local = hashFunction(key);
   int count = 0;
 
@@ -81,17 +83,15 @@ template <class T> bool HashTable<T>::remove(int key) {
 
 /**
  * Taken and modified from http://www.eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx
- * @param int* key, A pointer to an integer key
+ * @param K* key, A pointer to a key
  * @param int len, Length of the key in bytes. Use sizeof(key)
  * @return unsigned int, A positive int serving as hash code for key
  */
-unsigned oat_hash(int *key, int len) {
+template <class K> unsigned oat_hash(K *key, int len) {
     unsigned char *p = (unsigned char*)(key);
     unsigned h = 0;
-    int i;
 
-    for (i = 0; i < len; i++)
-    {
+    for (int i = 0; i < len; i++) {
         h += p[i];
         h += (h << 10);
         h ^= (h >> 6);
@@ -173,25 +173,14 @@ unsigned jen_hash(unsigned char *k, unsigned length, unsigned initval)
 }
 
 /**
- * Basic hash, gets job done but not well
- * @param int key, A unique identifier for dictionary
- * @return a positive int to serve as hash code
- */
-unsigned simple_hash(int key) {
-  return key*key + key;
-}
-
-/**
  * Unnecessary but helpful abstraction to allow easy change of hash in test phase
- * @param int key, A unique identifier for dictionary
+ * @param K key, A unique identifier for dictionary
  * @param int choice, The hash function to use
  * @return a positive int < MAXHASH to serve as hash code
  */
-unsigned chooseHash(int key, int choice) {
+template <class K> unsigned chooseHash(K key, int choice) {
   unsigned hash;
-  if (choice == 0)
-    hash = simple_hash(&key, sizeof(key));
-  else if (choice == 1)
+  if (choice == 1)
     hash = oat_hash(&key, sizeof(key));
   else if (choice == 2)
     hash = jen_hash((unsigned char*)&key, sizeof(key), 1);
@@ -200,31 +189,35 @@ unsigned chooseHash(int key, int choice) {
 
 /**
  * Hash function for finding the home position
- * @param int key, A unique identifier for dictionary
+ * @param K key, A unique identifier for dictionary
  * @return a positive int < MAXHASH to serve as array index
  */
-template <class T> unsigned HashTable<T>::hashFunction(int key) {
+template <class K, class V> unsigned HashTable<K, V>::hashFunction(K key) {
+
   return chooseHash(key, 2);
 }
 
 /**
  * Increment the home hash by probe amount
- * @param int key, A unique identifier for dictionary
+ * @param K key, A unique identifier for dictionary
  * @param int hash, The hash table index that resulted in a collision
  * @return a positive int < MAXHASH to serve as next array index
  */
-template <class T> unsigned HashTable<T>::probeFunction(int key, int hash) {
-  int probe = (hash + chooseHash(key, 1)) % MAXHASH;
+template <class K, class V> unsigned HashTable<K, V>::probeFunction(K key, int hash) {
+  int probe = (hash + chooseHash(key, 1)/MAXHASH) % MAXHASH;
   if (probe == hash) probe += 5;
   return probe;
 }
 
 /*Deallocater*/
-template <class T> HashTable<T>::~HashTable() {
+template <class K, class V> HashTable<K, V>::~HashTable() {
   delete[] hashMap;
 }
 
-//Sets what types T can be
-template class HashTable<int>;
-template class HashTable<float>;
-template class HashTable<string>;
+//Sets what types K, V can be
+template class HashTable<int, int>;
+template class HashTable<int, float>;
+template class HashTable<int, string>;
+template class HashTable<string, int>;
+template class HashTable<string, float>;
+template class HashTable<string, string>;

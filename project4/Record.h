@@ -21,11 +21,10 @@ enum RecordType { normalRecord, emptyRecord, tombstone };
 // that deep copies are made upon assignment, and that
 // any values allocated are properly deleted in the Record
 // destructor.
-template <class T> class Record
-{
+template <class K, class V> class Record {
 private:
-	int key;
-	T value;
+	K key;
+	V value;
 	RecordType type;
 
 public:
@@ -35,13 +34,12 @@ public:
 	// records would be to use inheritance, similar to the way we
 	// avoided having null pointers in leaf nodes for binary trees.
 	Record() {
-		key = 0;
 		type = emptyRecord;
 	}
 
 	// This constructor uses an initialization list
 	// See "member initialization" at: http://www.cplusplus.com/doc/tutorial/classes/
-	Record(int newkey, T newvalue) : key(newkey), value(newvalue) {
+	Record(K newkey, V newvalue) : key(newkey), value(newvalue) {
 		type = normalRecord;
 	}
 
@@ -51,12 +49,12 @@ public:
 	}
 
 	// Get the integer key of a record
-	int getKey() const {
+	K getKey() const {
 		return key;
 	}
 
 	// Get the value of a record
-	T getValue() const {
+	V getValue() const {
 		return value;
 	}
 
@@ -86,7 +84,13 @@ public:
 		return os;
 	}
 
-	~Record()
-	{
-	}
+	~Record()	{}
 };
+
+//Sets what types K, V can be
+// template class Record<int, int>;
+// template class Record<int, float>;
+// template class Record<int, string>;
+// template class Record<string, int>;
+// template class Record<string, float>;
+// template class Record<string, string>;

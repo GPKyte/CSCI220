@@ -2,9 +2,9 @@
 #include "Record.h"
 #define MAXHASH 1009 // Size of HashTable. Must be prime number ~twice desired amount of data
 
-template <class T> class HashTable {
+template <class K, class V> class HashTable {
 private:
-  Record<T> *hashMap; // Array of record objects
+  Record<K, V> *hashMap; // Array of record objects
   int currentSize; // Number of key/value pairs stored in hashMap array
 
   //friend function for << operator.
@@ -17,11 +17,11 @@ private:
 
 public:
   HashTable();
-  bool find(int key, T& value);
-  bool insert(int key, T value, int& collisions);
+  bool find(K key, V& value);
+  bool insert(K key, V value, int& collisions);
   float alpha();
-  bool remove(int key);
-  unsigned hashFunction(int key);
-  unsigned probeFunction(int key, int hash);
+  bool remove(K key);
+  unsigned hashFunction(K key);
+  unsigned probeFunction(K key, int hash);
   ~HashTable();
 };
