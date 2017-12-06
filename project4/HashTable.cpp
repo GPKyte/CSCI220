@@ -14,7 +14,7 @@ template <class T> bool HashTable<T>::find(int key, T& value) {
   int local = hashFunction(key);
   int count = 0;
 
-  // Since MAXHASH is prime, all values 0-MAXHASH will be covered eventually
+  // Since MAXHASH is prime, all values 0-MAXHASH will be covered worstcase
   while (count != MAXHASH) {
     if (hashMap[local].isNormal() && hashMap[local].getKey() == key) {
       value = hashMap[local].getValue();
@@ -28,9 +28,11 @@ template <class T> bool HashTable<T>::find(int key, T& value) {
 }
 
 /**
- * Inserts the key/value into the hashtable and
- * stores the amount of collisions in an outside memory location
- * for analysis
+ * Inserts the key/value into the hashtable and stores the amount
+ * of collisions in an outside memory location for analysis
+ * @param int key, A unique identifier
+ * @param T value, A value of the accepted type T, no restrictions beyond type
+ * @param int& collisions, Reference to outside variable to track collision history
  */
 template <class T> bool HashTable<T>::insert(int key, T value, int& collisions) {
   unsigned int local = hashFunction(key);
@@ -77,7 +79,12 @@ template <class T> bool HashTable<T>::remove(int key) {
   return false;
 }
 
-/*Taken and modified from http://www.eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx */
+/**
+ * Taken and modified from http://www.eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx
+ * @param int* key, A pointer to an integer key
+ * @param int len, Length of the key in bytes. Use sizeof(key)
+ * @return unsigned int, A positive int serving as hash code for key
+ */
 unsigned oat_hash(int *key, int len) {
     unsigned char *p = (unsigned char*)(key);
     unsigned h = 0;
@@ -97,9 +104,9 @@ unsigned oat_hash(int *key, int len) {
     return h;
 }
 
+// Definitions for the Jenkins Hash
 #define hashsize(n) (1U << (n))
 #define hashmask(n) (hashsize(n) - 1)
-
 #define mix(a,b,c) \
 { \
     a -= b; a -= c; a ^= (c >> 13); \
@@ -113,6 +120,15 @@ unsigned oat_hash(int *key, int len) {
     c -= a; c -= b; c ^= (b >> 15); \
 }
 
+/**
+ * The Jenkins hash as seen here:
+ *   http://www.eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx
+ * It's an overly complex hash at bit level; it does a good job.
+ * @param unsigned char *k, Reference to a probably (casted) variable for a unique ID
+ * @param unsigned length, The length of k, it works to say sizeof(k)
+ * @param unsigned initval, Any desired value to mix against k
+ * @return unsigned int, A positive int serving as hash code for k
+ */
 unsigned jen_hash(unsigned char *k, unsigned length, unsigned initval)
 {
     unsigned a, b;
@@ -140,7 +156,7 @@ unsigned jen_hash(unsigned char *k, unsigned length, unsigned initval)
     case 11: c += ((unsigned)k[10] << 24);
     case 10: c += ((unsigned)k[9] << 16);
     case 9: c += ((unsigned)k[8] << 8);
-        /* First byte of c reserved for length */
+    /* First byte of c reserved for length */
     case 8: b += ((unsigned)k[7] << 24);
     case 7: b += ((unsigned)k[6] << 16);
     case 6: b += ((unsigned)k[5] << 8);
@@ -156,10 +172,21 @@ unsigned jen_hash(unsigned char *k, unsigned length, unsigned initval)
     return c;
 }
 
-unsigned simple_hash(int *key, int len) {
-  return (*(key) * len + 1);
+/**
+ * Basic hash, gets job done but not well
+ * @param int key, A unique identifier for dictionary
+ * @return a positive int to serve as hash code
+ */
+unsigned simple_hash(int key) {
+  return key*key + key;
 }
 
+/**
+ * Unnecessary but helpful abstraction to allow easy change of hash in test phase
+ * @param int key, A unique identifier for dictionary
+ * @param int choice, The hash function to use
+ * @return a positive int < MAXHASH to serve as hash code
+ */
 unsigned chooseHash(int key, int choice) {
   unsigned hash;
   if (choice == 0)
@@ -171,21 +198,26 @@ unsigned chooseHash(int key, int choice) {
   return hash % MAXHASH;
 }
 
-/*Hash function for finding the home position*/
+/**
+ * Hash function for finding the home position
+ * @param int key, A unique identifier for dictionary
+ * @return a positive int < MAXHASH to serve as array index
+ */
 template <class T> unsigned HashTable<T>::hashFunction(int key) {
   return chooseHash(key, 2);
 }
 
-/*Returns the offset to probe by*/
+/**
+ * Increment the home hash by probe amount
+ * @param int key, A unique identifier for dictionary
+ * @param int hash, The hash table index that resulted in a collision
+ * @return a positive int < MAXHASH to serve as next array index
+ */
 template <class T> unsigned HashTable<T>::probeFunction(int key, int hash) {
   int probe = (hash + chooseHash(key, 1)) % MAXHASH;
   if (probe == hash) probe += 5;
   return probe;
 }
-
-// template <class T> unsigned HashTable<T>::probeFunction(int key, int hash) {
-//   return (hash + oat_hash(&key, sizeof(key))) % MAXHASH;
-// }
 
 /*Deallocater*/
 template <class T> HashTable<T>::~HashTable() {
