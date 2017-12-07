@@ -15,8 +15,9 @@ int main()
 	HashTable<int, int> table;
 	for (int i=0; i<1009; i++) {
 		table.insert(rand(), rand(), collisions);
-		cout << table.alpha() << "," << collisions << endl;
+		// cout << table.alpha() << "," << collisions << endl;
 	}
 	// cout<<table;
+	cout<<collisions<<endl;
 	return 0;
 }

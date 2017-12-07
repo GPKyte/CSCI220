@@ -44,5 +44,7 @@ int main(){
   cout<<"Inserted: "<<insertSuccesses<<endl;
   cout<<"Removed: "<<removeSuccesses<<endl;
   cout<<"Found remaining: "<<findSuccesses<<endl;
+  table.find(97*3, num);
+  cout<<"At key 291, value is "<<num<<endl;
   return 0;
 }

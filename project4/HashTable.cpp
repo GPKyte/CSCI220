@@ -89,19 +89,19 @@ template <class K, class V> bool HashTable<K, V>::remove(K key) {
  * @return unsigned int, A positive int serving as hash code for key
  */
 unsigned oat_hash(unsigned char *key, int len) {
-    unsigned h = 0;
+  unsigned h = 0;
 
-    for (int i = 0; i < len; i++) {
-        h += key[i];
-        h += (h << 10);
-        h ^= (h >> 6);
-    }
+  for (int i = 0; i < len; i++) {
+    h += key[i];
+    h += (h << 10);
+    h ^= (h >> 6);
+  }
 
-    h += (h << 3);
-    h ^= (h >> 11);
-    h += (h << 15);
+  h += (h << 3);
+  h ^= (h >> 11);
+  h += (h << 15);
 
-    return h;
+  return h;
 }
 
 // Definitions for the Jenkins Hash

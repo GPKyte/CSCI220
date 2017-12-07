@@ -10,7 +10,7 @@ private:
   //friend function for << operator.
   friend ostream& operator<<(ostream& os, const HashTable& me) {
     for (int i = 0; i < MAXHASH; i++) {
-      cout<<me.hashMap[i]<<endl;
+      cout<<setw(4)<<i+1<<") "<<me.hashMap[i]<<endl;
     }
     return os;
   }
