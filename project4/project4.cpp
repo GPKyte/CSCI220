@@ -12,12 +12,11 @@ int main()
 	/* initialize random seed: */
 	srand((unsigned int)time(0));
 	int collisions = 0;
-	HashTable<string, int> table;
+	HashTable<int, int> table;
 	for (int i=0; i<504; i++) {
-		table.insert("hi"+to_string(i), rand(), collisions);
-		// cout << table.alpha() << "," << collisions << endl;
+		table.insert(rand(), rand(), collisions);
 	}
-	cout<<table;
+	// cout<<table;
 	cout << collisions << endl;
 	return 0;
 }

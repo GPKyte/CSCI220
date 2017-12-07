@@ -51,7 +51,6 @@ template <class K, class V> bool HashTable<K, V>::insert(K key, V value, int& co
       local = probeFunction(key, local);
       count++;
     }
-    if (count > MAXHASH/2) std::cout << local << std::endl;
   }
   std::cout<<local<<std::endl;
   throw(1); // Mathematically impossible if MAXHASH is prime, practically possible via program error.
@@ -87,12 +86,11 @@ template <class K, class V> bool HashTable<K, V>::remove(K key) {
  * @param int len, Length of the key in bytes. Use sizeof(key)
  * @return unsigned int, A positive int serving as hash code for key
  */
-template <class K> unsigned oat_hash(K *key, int len) {
-    unsigned char *p = (unsigned char*)(key);
+unsigned oat_hash(unsigned char *key, int len) {
     unsigned h = 0;
 
     for (int i = 0; i < len; i++) {
-        h += p[i];
+        h += key[i];
         h += (h << 10);
         h ^= (h >> 6);
     }
@@ -178,10 +176,12 @@ unsigned jen_hash(unsigned char *k, unsigned length, unsigned initval)
  * @param int choice, The hash function to use
  * @return a positive int < MAXHASH to serve as hash code
  */
-template <class K> unsigned chooseHash(K key, int choice) {
+unsigned chooseHash(size_t key, int choice) {
   unsigned hash;
-  if (choice == 1)
-    hash = oat_hash(&key, sizeof(key));
+  if (choice == 0)
+    hash = key % MAXHASH;
+  else if (choice == 1)
+    hash = oat_hash((unsigned char*)&key, sizeof(key));
   else if (choice == 2)
     hash = jen_hash((unsigned char*)&key, sizeof(key), 1);
   return hash % MAXHASH;
@@ -193,8 +193,8 @@ template <class K> unsigned chooseHash(K key, int choice) {
  * @return a positive int < MAXHASH to serve as array index
  */
 template <class K, class V> unsigned HashTable<K, V>::hashFunction(K key) {
-
-  return chooseHash(key, 2);
+  size_t keyVal = std::hash<K>{}(key);
+  return chooseHash(keyVal, 2);
 }
 
 /**
@@ -204,9 +204,10 @@ template <class K, class V> unsigned HashTable<K, V>::hashFunction(K key) {
  * @return a positive int < MAXHASH to serve as next array index
  */
 template <class K, class V> unsigned HashTable<K, V>::probeFunction(K key, int hash) {
-  int probe = (hash + chooseHash(key, 1)/MAXHASH) % MAXHASH;
-  if (probe == hash) probe += 5;
-  return probe;
+  size_t keyVal = std::hash<K>{}(key);
+  unsigned int probe = hash + chooseHash(keyVal, 1);
+  if (probe % MAXHASH == hash) probe += 5;
+  return probe % MAXHASH;
 }
 
 /*Deallocater*/
@@ -218,6 +219,9 @@ template <class K, class V> HashTable<K, V>::~HashTable() {
 template class HashTable<int, int>;
 template class HashTable<int, float>;
 template class HashTable<int, string>;
+template class HashTable<float, int>;
+template class HashTable<float, float>;
+template class HashTable<float, string>;
 template class HashTable<string, int>;
 template class HashTable<string, float>;
 template class HashTable<string, string>;
