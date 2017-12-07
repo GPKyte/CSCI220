@@ -36,25 +36,26 @@ int main(){
   int collisions;
   string::size_type sz;
   HashTable<string, string> table;
-  ifstream file("ted_main.csv");
+  string fileName = "fakeNews.txt"; // ted_main.txt (1), fakeNews.txt (2)
+  ifstream file(fileName);
   ifstream ifs;
-  ifs.open("ted_main.csv", ifstream::in);
+  ifs.open(fileName, ifstream::in);
   if (file.is_open()) {
     string id;
     string headline;
     int i = 0;
-    while (file >> id && getline(file, headline) && i < 504) {
+    while (file >> id && getline(file, headline) && i < 1009) {
       trim(headline);
       table.insert(id, headline, collisions);
+      cout<<table.alpha()<<","<<collisions<<endl;
       i++;
     }
     file.clear();
     file.seekg(0, file.beg);
     file.close();
   } else {
+    cout<<fileName<<" is closed. Does it exist? Do you have correct permissions?"<<endl;
     throw(1);
   }
-  cout<<table;
-  cout<<collisions<<endl;
   return 0;
 }
