@@ -86,11 +86,3 @@ public:
 
 	~Record()	{}
 };
-
-//Sets what types K, V can be
-// template class Record<int, int>;
-// template class Record<int, float>;
-// template class Record<int, string>;
-// template class Record<string, int>;
-// template class Record<string, float>;
-// template class Record<string, string>;
